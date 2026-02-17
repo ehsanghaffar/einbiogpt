@@ -25,7 +25,7 @@ export default function ToneSelector({
   onSelect,
 }: ToneSelectorProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
       {tones.map((t) => {
         const isActive = selected === t.value;
         return (
@@ -33,7 +33,7 @@ export default function ToneSelector({
             key={t.value}
             onClick={() => onSelect(t.value)}
             className={cn(
-              "flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium",
+              "flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium",
               "transition-all duration-200 ease-out cursor-pointer",
               "border",
               isActive

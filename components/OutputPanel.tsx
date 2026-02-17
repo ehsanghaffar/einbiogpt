@@ -30,7 +30,7 @@ export default function OutputPanel({
   return (
     <div className="h-full flex flex-col">
       {/* Panel header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <div className="flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-primary/10">
             <Sparkles className="h-4 w-4 text-primary" />
@@ -58,7 +58,7 @@ export default function OutputPanel({
           </div>
         ) : generatedBio ? (
           <div className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="relative p-5 bg-secondary/50 rounded-2xl border border-border">
+            <div className="relative p-3 sm:p-5 bg-secondary/50 rounded-2xl border border-border">
               <p className="text-foreground leading-relaxed text-sm">
                 {generatedBio}
               </p>
@@ -78,7 +78,7 @@ export default function OutputPanel({
 
             {/* Platform preview */}
             {currentPlatform && (
-              <div className="mt-4 p-4 rounded-2xl border border-border bg-card animate-in fade-in slide-in-from-bottom-1 duration-300 delay-150">
+              <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-2xl border border-border bg-card animate-in fade-in slide-in-from-bottom-1 duration-300 delay-150">
                 <p className="text-xs text-muted-foreground mb-3 font-medium">
                   پیش‌نمایش در {currentPlatform.label}
                 </p>
@@ -104,7 +104,7 @@ export default function OutputPanel({
             )}
           </div>
         ) : (
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-12">
+          <div className="flex-1 flex flex-col items-center justify-center text-center py-8 sm:py-12">
             <div className="p-4 rounded-2xl bg-muted/50 mb-4">
               <Sparkles className="h-8 w-8 text-muted-foreground/50" />
             </div>
