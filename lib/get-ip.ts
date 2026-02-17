@@ -1,6 +1,21 @@
 import { headers } from "next/headers";
 
-export function getUserIp() {
+export function getUserIp(request?: Request): string | null {
+  if (request) {
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const realIp = request.headers.get("x-real-ip");
+
+    if (forwardedFor) {
+      return forwardedFor.split(",")[0].trim();
+    }
+
+    if (realIp) {
+      return realIp.trim();
+    }
+
+    return null;
+  }
+
   const forwardedFor = headers().get("x-forwarded-for");
   const realIp = headers().get("x-real-ip");
 
