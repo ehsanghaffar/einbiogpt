@@ -1,24 +1,12 @@
-import { MetadataRoute } from 'next'
+import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: 'https://bio.eindev.ir',
+      url: "https://bio.eindev.ir",
       lastModified: new Date(),
-      changeFrequency: 'yearly',
+      changeFrequency: "monthly",
       priority: 1,
     },
-    {
-      url: 'https://ehsanghaffarii.ir/about',
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.8,
-    },
-    {
-      url: 'https://ehsanghaffarii.ir/blog',
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.5,
-    },
-  ]
+  ];
 }
