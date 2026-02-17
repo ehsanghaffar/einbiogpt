@@ -126,6 +126,7 @@ export default function BioGenerator() {
       console.error("Error generating bio:", err);
       setError(errorMessage);
       sonnar.error("خطایی در تولید بایو رخ داد.");
+      setTimeout(scrollToOutput, 100);
     } finally {
       setIsGenerating(false);
       setCooldownTimer(NEXT_PUBLIC_COOLDOWN_TIME);
@@ -152,9 +153,9 @@ export default function BioGenerator() {
             <Sparkles className="h-3.5 w-3.5" />
             هوش مصنوعی
           </div>
-          <h2 className="text-xl sm:text-3xl font-extrabold text-foreground text-balance mb-2">
+          <h1 className="text-xl sm:text-3xl font-extrabold text-foreground text-balance mb-2">
             بایوی حرفه‌ای بساز، سریع و هوشمند
-          </h2>
+          </h1>
           <p className="text-muted-foreground text-xs sm:text-base max-w-lg mx-auto leading-relaxed">
             بایوهای جذاب و شخصی‌سازی شده برای شبکه‌های اجتماعی بساز
           </p>
@@ -274,6 +275,7 @@ export default function BioGenerator() {
               tone={tone}
               copied={copied}
               isGenerating={isGenerating}
+              error={error}
               onCopy={copyToClipboard}
               onRegenerate={generateBio}
             />

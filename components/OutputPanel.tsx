@@ -1,6 +1,6 @@
 "use client";
 
-import { Check, Copy, RefreshCw, Sparkles } from "lucide-react";
+import { AlertCircle, Check, Copy, RefreshCw, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { platforms } from "./PlatformSelector";
 import { tones } from "./ToneSelector";
@@ -11,6 +11,7 @@ interface OutputPanelProps {
   tone: string;
   copied: boolean;
   isGenerating: boolean;
+  error: string;
   onCopy: () => void;
   onRegenerate: () => void;
 }
@@ -21,6 +22,7 @@ export default function OutputPanel({
   tone,
   copied,
   isGenerating,
+  error,
   onCopy,
   onRegenerate,
 }: OutputPanelProps) {
@@ -50,13 +52,35 @@ export default function OutputPanel({
       {/* Content */}
       <div className="flex-1 flex flex-col gap-4">
         {isGenerating ? (
+          /* Loading skeleton */
           <div className="flex-1 flex flex-col gap-3 animate-in fade-in duration-300">
             <div className="h-4 w-3/4 bg-muted rounded-lg animate-pulse" />
             <div className="h-4 w-full bg-muted rounded-lg animate-pulse" />
             <div className="h-4 w-5/6 bg-muted rounded-lg animate-pulse" />
             <div className="h-4 w-2/3 bg-muted rounded-lg animate-pulse" />
           </div>
+        ) : error ? (
+          /* Error state */
+          <div className="flex-1 flex flex-col items-center justify-center text-center py-8 sm:py-12 animate-in fade-in duration-300">
+            <div className="p-4 rounded-2xl bg-destructive/5 border border-destructive/10 mb-4">
+              <AlertCircle className="h-8 w-8 text-destructive/60" />
+            </div>
+            <p className="text-foreground text-sm font-medium mb-1">
+              مشکلی پیش آمد
+            </p>
+            <p className="text-muted-foreground text-xs max-w-xs leading-relaxed mb-4">
+              {error}
+            </p>
+            <button
+              onClick={onRegenerate}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-primary text-primary-foreground hover:opacity-90 transition-all duration-200"
+            >
+              <RefreshCw className="h-3.5 w-3.5" />
+              تلاش دوباره
+            </button>
+          </div>
         ) : generatedBio ? (
+          /* Success state */
           <div className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="relative p-3 sm:p-5 bg-secondary/50 rounded-2xl border border-border">
               <p className="text-foreground leading-relaxed text-sm">
@@ -104,6 +128,7 @@ export default function OutputPanel({
             )}
           </div>
         ) : (
+          /* Empty state */
           <div className="flex-1 flex flex-col items-center justify-center text-center py-8 sm:py-12">
             <div className="p-4 rounded-2xl bg-muted/50 mb-4">
               <Sparkles className="h-8 w-8 text-muted-foreground/50" />
@@ -118,7 +143,7 @@ export default function OutputPanel({
         )}
 
         {/* Action buttons */}
-        {generatedBio && !isGenerating && (
+        {generatedBio && !isGenerating && !error && (
           <div className="flex gap-3 pt-2 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-200">
             <button
               onClick={onCopy}
