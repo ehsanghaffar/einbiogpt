@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AlertCircle,
   Globe,
@@ -11,7 +11,6 @@ import {
   Zap,
 } from "lucide-react";
 import { toast as sonnar } from "sonner";
-import { motion } from "motion/react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PlatformSelector, { platforms } from "@/components/PlatformSelector";
@@ -23,6 +22,7 @@ const NEXT_PUBLIC_COOLDOWN_TIME = Number(
 );
 
 export default function BioGenerator() {
+  const outputRef = useRef<HTMLDivElement>(null);
   const [cooldownTimer, setCooldownTimer] = useState(0);
   const [aboutYou, setAboutYou] = useState("");
   const [platform, setPlatform] = useState("");
@@ -34,6 +34,12 @@ export default function BioGenerator() {
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [isCooldown, setIsCooldown] = useState(false);
+
+  const scrollToOutput = useCallback(() => {
+    if (window.innerWidth < 1024 && outputRef.current) {
+      outputRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
 
   useEffect(() => {
     setCharCount(aboutYou.length);
@@ -111,6 +117,7 @@ export default function BioGenerator() {
       }
 
       sonnar.success("بایو ساخته شد!", { duration: 2000 });
+      setTimeout(scrollToOutput, 100);
     } catch (err) {
       const errorMessage =
         err instanceof Error
@@ -140,12 +147,7 @@ export default function BioGenerator() {
         <Header />
 
         {/* Hero section */}
-        <motion.div
-          initial={{ opacity: 0, y: -12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="text-center mb-8 sm:mb-10"
-        >
+        <div className="text-center mb-8 sm:mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-4">
             <Sparkles className="h-3.5 w-3.5" />
             هوش مصنوعی
@@ -156,15 +158,10 @@ export default function BioGenerator() {
           <p className="text-muted-foreground text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
             بایوهای جذاب و شخصی‌سازی شده برای شبکه‌های اجتماعی بساز
           </p>
-        </motion.div>
+        </div>
 
         {/* Main content: Two-panel layout */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8"
-        >
+        <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           {/* Left panel: Input & Controls */}
           <div className="glass-surface rounded-2xl p-6 sm:p-8 flex flex-col">
             <div className="space-y-6 flex-1">
@@ -270,7 +267,7 @@ export default function BioGenerator() {
           </div>
 
           {/* Right panel: Output */}
-          <div className="glass-surface rounded-2xl p-6 sm:p-8">
+          <div ref={outputRef} className="glass-surface rounded-2xl p-6 sm:p-8">
             <OutputPanel
               generatedBio={generatedBio}
               platform={platform}
@@ -281,7 +278,7 @@ export default function BioGenerator() {
               onRegenerate={generateBio}
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* Footer */}
         <Footer />
