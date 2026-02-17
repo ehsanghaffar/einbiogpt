@@ -14,17 +14,21 @@ AI-powered social media bio generator built with Next.js, TypeScript, and OpenAI
 
 ## Rate Limiting & Error Handling
 
-**In-memory IP-based rate limiting** (not database):
-- Two implementations: [lib/limiter.ts](../lib/limiter.ts) (time-window based) and [store/rateLimitStore.ts](../store/rateLimitStore.ts) (simpler 360-min window)
-- Custom `RateLimitError` in [lib/errors.ts](../lib/errors.ts); custom `ServerError` class takes status code
+**IP-based rate limiting** with Redis support (production) or in-memory fallback (development):
+- Unified implementation: [lib/rate-limit.ts](../lib/rate-limit.ts)
+- RateLimitError class defined in [lib/rate-limit.ts](../lib/rate-limit.ts)
+- Configurable via env vars: `REDIS_URL`, `RATE_LIMIT_WINDOW`, `RATE_LIMIT_MAX`
 - **Client-side cooldown**: `NEXT_PUBLIC_COOLDOWN_TIME` env var (default 10s) - managed in page.tsx state
 - API returns JSON errors with Persian messages: `{ error: "لطفاً تمام فیلدهای مورد نیاز را پر کنید." }`
 
 ## Key Patterns & Conventions
 
 ### Environment Variables
-- `NEXT_PUBLIC_OPENAI_API_KEY`: OpenAI API key (exposed to client in earlier versions; reconsider security)
+- `NEXT_OPENAI_API_KEY`: OpenAI API key (server-side only, NOT prefixed with NEXT_PUBLIC_)
 - `NEXT_PUBLIC_COOLDOWN_TIME`: Cooldown in seconds between requests
+- `REDIS_URL`: Redis connection URL for production rate limiting (optional)
+- `RATE_LIMIT_WINDOW`: Rate limit window in milliseconds (default: 60000)
+- `RATE_LIMIT_MAX`: Max requests per window per IP (default: 10)
 
 ### Styling & UI
 - **Tailwind CSS** with RTL support; HSL CSS variables in [styles/globals.css](../styles/globals.css)

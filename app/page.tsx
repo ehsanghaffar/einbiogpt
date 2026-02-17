@@ -21,7 +21,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast as sonnar } from "sonner";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Footer from "@/components/Footer";
@@ -174,8 +174,6 @@ const BioGenerator = () => {
         tone,
         language: "persian",
       };
-
-      console.log(requestData);
 
       // Make the API request
       const response = await fetch("/api/generate", {
