@@ -1,7 +1,6 @@
 import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Metadata } from "next";
-import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 type Props = {
@@ -40,7 +39,6 @@ export default function RootLayout({
     <html lang="fa" dir="rtl">
       <body className="flex flex-col">
         {children}
-        <Analytics />
         <SpeedInsights />
         <Toaster />
       </body>

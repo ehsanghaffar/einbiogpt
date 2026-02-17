@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server"
-import { LLMChain } from "langchain/chains"
-import { ChatOpenAI } from "@langchain/openai"
-import { PromptTemplate } from "@langchain/core/prompts";
-const apikey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
+import { rateLimitByIp, RateLimitError } from "@/lib/rate-limit";
+import { generateBioWithLLM, SupportedModel } from "@/lib/llm-provider";
+
+const LLM_MODEL = (process.env.NEXT_LLM_MODEL || "gpt-4o") as SupportedModel
 
 export async function POST(request: Request) {
   try {
-    // Parse the request body
+    await rateLimitByIp(request);
+
     const body = await request.json()
     const { aboutYou, platform, tone, language } = body
 
@@ -14,13 +15,6 @@ export async function POST(request: Request) {
     if (!aboutYou || !platform || !tone) {
       return NextResponse.json({ error: "لطفاً تمام فیلدهای مورد نیاز را پر کنید." }, { status: 400 })
     }
-
-    // Initialize the language model
-    const model = new ChatOpenAI({
-      modelName: "gpt-4o", // or any other model you prefer
-      temperature: 0.7,
-      openAIApiKey: apikey,
-    })
 
     // Create a prompt template
     const template = `
@@ -52,43 +46,43 @@ export async function POST(request: Request) {
       غفار
     `
 
-    const promptTemplate = new PromptTemplate({
-      template,
-      inputVariables: ["aboutYou", "platform", "tone"],
-    })
-
-    // Create a chain
-    const chain = new LLMChain({
-      llm: model,
-      prompt: promptTemplate,
-    })
-
-    // Run the chain
-    const result = await chain.call({
+    // Generate bio using the selected LLM model
+    const result = await generateBioWithLLM(LLM_MODEL, template, {
       aboutYou,
       platform,
       tone,
     })
 
-    console.log(result);
-
+    console.log("Generated bio:", result);
 
     // Extract the generated bio from the result
-    const generatedBio = result.text.trim()
+    const generatedBio = result.text
 
     // Return the generated bio
-    return NextResponse.json({ bio: generatedBio })
+    return NextResponse.json({ 
+      bio: generatedBio,
+      model: LLM_MODEL,
+    })
   } catch (error) {
     console.error("Error in generate-bio API:", error)
 
-    // If there's an error with Langchain, fall back to the template-based approach
+    if (error instanceof RateLimitError) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 429 }
+      )
+    }
+
     try {
-      const body = await request.json() // Ensure body is defined within the catch block
+      const body = await request.json()
       const fallbackBio = generateFallbackBio(body.aboutYou, body.platform, body.tone)
-      return NextResponse.json({
-        bio: fallbackBio,
-        note: "تولید شده با سیستم پشتیبان به دلیل مشکل در ارتباط با هوش مصنوعی",
-      })
+      return NextResponse.json(
+        {
+          bio: fallbackBio,
+          note: "تولید شده با سیستم پشتیبان به دلیل مشکل در ارتباط با هوش مصنوعی",
+        },
+        { status: 200 }
+      )
     } catch (fallbackError) {
       return NextResponse.json(
         {

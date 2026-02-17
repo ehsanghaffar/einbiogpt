@@ -6,8 +6,7 @@ import { createStructuredOutputChainFromZod } from "langchain/chains/openai_func
 import { PromptTemplate } from "@langchain/core/prompts";
 import { createOpenAIModel } from "@/lib/Langchain";
 import { createUserMessage } from "@/lib/utils";
-import { checkRateLimit } from "@/store/rateLimitStore";
-import { getUserIp } from "@/lib/get-ip";
+import { rateLimitByIp, RateLimitError } from "@/lib/rate-limit";
 
 export const runtime = "edge";
 
@@ -28,18 +27,17 @@ Creativity: Add a unique creative flair to make the bio captivating and reflecti
 {input}`;
 
 
-const apikey = process.env.NEXT_PUBLIC_OPENAI_API_KEY
+const apikey = process.env.NEXT_OPENAI_API_KEY
 
 
 export async function POST(req: NextRequest) {
+  if (!apikey) {
+    return NextResponse.json({ error: "API key not configured" }, { status: 500 });
+  }
+
   try {
 
-    const ip = getUserIp();
-    if (!checkRateLimit(ip as string)) {
-      return NextResponse.json({ error: "شما بیش از حد مجاز از سرویس استفاده کرده اید. چند ساعت بعد امتحان کنید" }, { status: 429 });
-    }
-
-    console.log(`USER IP: ${ip}`)
+    await rateLimitByIp(req);
 
     const userMessage = await req.json()
 
@@ -47,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const prompt = PromptTemplate.fromTemplate<{ input: string }>(TEMPLATE);
 
-    const model = createOpenAIModel(apikey)
+    const model = createOpenAIModel(apikey) as any
 
     const schema = z.object({
       output: z.array(
@@ -56,8 +54,7 @@ export async function POST(req: NextRequest) {
           content: z.string(),
         })
       ),
-
-    });
+    }) as any;
 
     console.log(prompt)
 
@@ -75,6 +72,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(result.output, { status: 200 });
   } catch (e: any) {
     console.log(e)
+
+    if (e instanceof RateLimitError) {
+      return NextResponse.json({ error: e.message }, { status: 429 });
+    }
+
     if (e.message.includes("API key")){
       return NextResponse.json({ error: "سرویس فعلا در دسترس نیست" }, { status: 500 });
     }
