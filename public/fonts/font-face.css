@@ -1,49 +1,49 @@
 @font-face {
   font-family: Sahel;
-  src: url('Sahel.eot');
-  src: url('Sahel.eot?#iefix') format('embedded-opentype'),
-    url('Sahel.woff2') format('woff2'),
-    url('Sahel.woff') format('woff'),
-    url('Sahel.ttf') format('truetype');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.eot');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.ttf') format('truetype');
   font-weight: normal;
 }
 
 @font-face {
   font-family: Sahel;
-  src: url('Sahel-Bold.eot');
-  src: url('Sahel-Bold.eot?#iefix') format('embedded-opentype'),
-    url('Sahel-Bold.woff2') format('woff2'),
-    url('Sahel-Bold.woff') format('woff'),
-    url('Sahel-Bold.ttf') format('truetype');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.eot');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.ttf') format('truetype');
   font-weight: bold;
 }
 
 @font-face {
   font-family: Sahel;
-  src: url('Sahel-Light.eot');
-  src: url('Sahel-Light.eot?#iefix') format('embedded-opentype'),
-    url('Sahel-Light.woff2') format('woff2'),
-    url('Sahel-Light.woff') format('woff'),
-    url('Sahel-Light.ttf') format('truetype');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.eot');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Light.ttf') format('truetype');
   font-weight: 300;
 }
 
 @font-face {
   font-family: Sahel;
-  src: url('Sahel-SemiBold.eot');
-  src: url('Sahel-SemiBold.eot?#iefix') format('embedded-opentype'),
-    url('Sahel-SemiBold.woff2') format('woff2'),
-    url('Sahel-SemiBold.woff') format('woff'),
-    url('Sahel-SemiBold.ttf') format('truetype');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-SemiBold.eot');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-SemiBold.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-SemiBold.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-SemiBold.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-SemiBold.ttf') format('truetype');
   font-weight: 600;
 }
 
 @font-face {
   font-family: Sahel;
-  src: url('Sahel-Black.eot');
-  src: url('Sahel-Black.eot?#iefix') format('embedded-opentype'),
-    url('Sahel-Black.woff2') format('woff2'),
-    url('Sahel-Black.woff') format('woff'),
-    url('Sahel-Black.ttf') format('truetype');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Black.eot');
+  src: url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Black.eot?#iefix') format('embedded-opentype'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Black.woff2') format('woff2'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Black.woff') format('woff'),
+    url('https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Black.ttf') format('truetype');
   font-weight: 900;
 }
