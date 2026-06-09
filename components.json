@@ -13,5 +13,8 @@
   "aliases": {
     "components": "@/components",
     "utils": "@/lib/utils"
+  },
+  "registries": {
+    "@einui": "https://ui.eindev.ir/r/{name}.json"
   }
 }
