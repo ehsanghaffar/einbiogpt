@@ -9,11 +9,16 @@ export default function Footer() {
           rel="noreferrer"
           className="font-semibold text-primary hover:underline underline-offset-2 transition-colors"
         >
-          احسان غفار
+          عین
         </a>
       </p>
       <p className="hidden sm:block">
-        ساخته شده با هوش مصنوعی
+        {"منبع باز تحت "}
+        <span
+          className="font-semibold text-primary hover:underline underline-offset-2 transition-colors"
+        >
+          MIT License
+        </span>
       </p>
     </footer>
   );
