@@ -137,4 +137,46 @@ body {
   .dark .glass-surface {
     @apply bg-white/5 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)];
   }
+
+  /* Scrollbar styling for better dark mode appearance */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full hover:bg-muted-foreground transition-colors;
+  }
+
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-muted hover:bg-muted-foreground transition-colors;
+  }
+}
+
+/* Smooth theme transitions */
+html {
+  color-scheme: light dark;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Ensure inputs and textareas respect theme */
+input,
+textarea,
+select {
+  @apply bg-background text-foreground;
+}
+
+/* Selection highlight respects theme */
+::selection {
+  @apply bg-primary text-primary-foreground;
 }

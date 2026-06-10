@@ -2,6 +2,8 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { ThemeScript } from "./theme-script";
 
 const siteUrl = "https://bio.eindev.ir";
 
@@ -105,17 +107,20 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl">
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
       <head>
+        <ThemeScript />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
       <body className="min-h-screen antialiased">
-        {children}
-        <SpeedInsights />
-        <Toaster />
+        <ThemeProvider>
+          {children}
+          <SpeedInsights />
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );
