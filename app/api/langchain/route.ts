@@ -3,10 +3,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createStructuredOutputChainFromZod } from "langchain/chains/openai_functions";
-import { PromptTemplate } from "@langchain/core/prompts";
 import { createOpenAIModel } from "@/lib/Langchain";
 import { createUserMessage } from "@/lib/utils";
 import { rateLimitByIp, RateLimitError } from "@/lib/rate-limit";
+import { PromptTemplate } from "@langchain/core/prompts";
 
 export const runtime = "edge";
 
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
 
     const chain = createStructuredOutputChainFromZod(schema, {
       llm: model,
-      prompt,
+      prompt: prompt as any,
       outputKey: "output",
     });
 

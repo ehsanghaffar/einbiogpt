@@ -58,7 +58,7 @@ function createOpenAIChain(
 
   return new LLMChain({
     llm: chatOpenAI,
-    prompt: promptTemplate,
+    prompt: promptTemplate as any, // Type assertion to bypass type issuesp
   });
 }
 

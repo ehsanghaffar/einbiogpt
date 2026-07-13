@@ -11,7 +11,9 @@
     "yarn run clean": "rm -rf node_modules **/node_modules && rm -rf yarn.lock **/yarn.lock && yarn cache clean && yarn install"
   },
   "dependencies": {
+    "@langchain/core": "^1.2.2",
     "@langchain/openai": "0.0.33",
+    "@openrouter/sdk": "^0.2.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@upstash/redis": "^1.36.2",
     "@vercel/analytics": "0.1.8",
@@ -24,7 +26,6 @@
     "lucide-react": "0.303.0",
     "next": "14.2.35",
     "next-themes": "0.3.0",
-    "@openrouter/sdk": "^0.2.0",
     "openai": "3.2.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
