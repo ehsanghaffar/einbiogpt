@@ -131,7 +131,30 @@ NEXT_LLM_MODEL=gpt-4o
 NEXT_OPENAI_API_KEY=sk_live_your_key_here
 ```
 
-### Option 2: Using Free Models (AIHUBMIX)
+### Option 2: Using OpenRouter Models
+
+**Best for**: Any OpenRouter model slug, dynamic model selection, and broad provider support.
+
+#### 1. Get OpenRouter API Key
+
+1. Go to https://openrouter.ai
+2. Sign up or log in
+3. Create an API key
+4. Copy your API key
+
+#### 2. Configure `.env.local`
+
+```bash
+NEXT_LLM_MODEL=meta-llama/llama-3.3-70b-instruct:free
+NEXT_LLM_PROVIDER=openrouter
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_HTTP_REFERER=https://your-site.example
+OPENROUTER_APP_NAME=BioGPT
+```
+
+### Option 3: Using Free Models (AIHUBMIX)
 
 **Best for**: Testing, learning, cost-free
 
@@ -164,6 +187,15 @@ NEXT_LLM_MODEL=gpt-4o
 # OpenAI Configuration (if using GPT models)
 # ============================================
 NEXT_OPENAI_API_KEY=sk_live_your_key_here
+
+# ============================================
+# OpenRouter Configuration (if using OpenRouter models)
+# ============================================
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_HTTP_REFERER=https://your-site.example
+OPENROUTER_APP_NAME=BioGPT
 
 # ============================================
 # AIHUBMIX Configuration (if using free models)

@@ -198,6 +198,15 @@ NEXT_LLM_MODEL=gpt-4o
 # تنظیمات OpenAI (اگر از مدل‌های GPT استفاده می‌کنید)
 NEXT_OPENAI_API_KEY=sk_live_your_key_here
 
+# تنظیمات OpenRouter (اگر از مدل‌های OpenRouter استفاده می‌کنید)
+NEXT_LLM_PROVIDER=openrouter
+NEXT_LLM_MODEL=meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_HTTP_REFERER=https://your-site.example
+OPENROUTER_APP_NAME=BioGPT
+
 # تنظیمات AIHUBMIX (برای مدل‌های رایگان)
 AIHUBMIX_API_KEY=your_aihubmix_key_here
 AIHUBMIX_API_BASE_URL=https://aihubmix.com/v1

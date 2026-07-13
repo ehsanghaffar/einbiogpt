@@ -465,6 +465,7 @@ Production:
 2. Add environment variables
 3. Create provider initialization function
 4. Update `NEXT_LLM_MODEL` documentation
+5. Add provider-specific SDK integration if required (OpenRouter uses `@openrouter/sdk`)
 
 ### Custom Rate Limiting
 

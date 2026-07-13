@@ -94,8 +94,9 @@ BioGPT is an intelligent web application that helps users create compelling soci
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
 | **LLM Framework** | [LangChain](https://www.langchain.com/) | 0.2.2 | LLM orchestration and chain management |
-| **LLM Providers** | OpenAI, AIHUBMIX | Latest | Multiple LLM providers support |
+| **LLM Providers** | OpenAI, AIHUBMIX, OpenRouter | Latest | Multiple LLM providers support |
 | **OpenAI** | [OpenAI SDK](https://openai.com/) | 3.2.1 | GPT models (gpt-4o, gpt-5) |
+| **OpenRouter** | [@openrouter/sdk](https://www.npmjs.com/package/@openrouter/sdk) | ^0.2.0 | OpenRouter models and streaming completion |
 | **LangChain OpenAI** | [@langchain/openai](https://www.npmjs.com/package/@langchain/openai) | 0.0.33 | OpenAI integration for LangChain |
 | **HTTP Client** | [Axios](https://axios-http.com/) | 1.4.0 | HTTP requests and API calls |
 | **SSE Parser** | [eventsource-parser](https://www.npmjs.com/package/eventsource-parser) | 0.0.5 | Parse Server-Sent Events |
@@ -103,6 +104,7 @@ BioGPT is an intelligent web application that helps users create compelling soci
 **Supported LLM Models:**
 - **OpenAI**: gpt-4o, gpt-5
 - **AIHUBMIX Free Models**: glm-4.7-flash-free, gemini-2.0-flash-free, mimo-v2-flash-free
+- **OpenRouter**: any OpenRouter model slug, e.g. meta-llama/llama-3.3-70b-instruct:free, nousresearch/hermes-3-llama-3.1-405b:free
 
 ### Data & Infrastructure
 
@@ -319,6 +321,18 @@ NEXT_LLM_MODEL=gpt-4o
 # Required only if using gpt-4o or gpt-5 models
 # Get from: https://platform.openai.com/api-keys
 NEXT_OPENAI_API_KEY=sk_your_key_here
+```
+
+#### OpenRouter Configuration
+
+```bash
+# Required only if using OpenRouter models
+# Get from: https://openrouter.ai
+OPENROUTER_API_KEY=your_openrouter_key_here
+OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
+OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
+OPENROUTER_HTTP_REFERER=https://your-site.example
+OPENROUTER_APP_NAME=BioGPT
 ```
 
 #### AIHUBMIX Configuration (for free models)
