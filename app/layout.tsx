@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { Metadata, Viewport } from "next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { ThemeScript } from "./theme-script";
 
@@ -121,6 +122,7 @@ export default function RootLayout({
           <SpeedInsights />
           <Toaster />
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

@@ -16,7 +16,7 @@
     "@openrouter/sdk": "^0.2.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@upstash/redis": "^1.36.2",
-    "@vercel/analytics": "0.1.8",
+    "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "1.0.11",
     "axios": "1.4.0",
     "class-variance-authority": "0.7.0",
