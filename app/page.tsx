@@ -1,25 +1,29 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  AlertCircle,
-  Globe,
-  Info,
-  RefreshCw,
-  Smile,
-  Sparkles,
-  Zap,
-} from "lucide-react";
-import { toast as sonnar } from "sonner";
+import { AlertCircle, CheckCircle2, HelpCircle, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import PlatformSelector, { platforms } from "@/components/PlatformSelector";
 import ToneSelector from "@/components/ToneSelector";
 import OutputPanel from "@/components/OutputPanel";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-const NEXT_PUBLIC_COOLDOWN_TIME = Number(
-  process.env.NEXT_PUBLIC_COOLDOWN_TIME || 10
-);
+const COOLDOWN_TIME = Number(process.env.NEXT_PUBLIC_COOLDOWN_TIME || 10);
+
+function SectionTitle({ number, title, description }: { number: string; title: string; description: string }) {
+  return (
+    <div className="flex items-center gap-2 sm:items-start sm:gap-3">
+      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary sm:size-7">{number}</span>
+      <div className="flex flex-col gap-1">
+        <h2 className="text-sm font-bold text-foreground">{title}</h2>
+        <p className="hidden text-xs leading-5 text-muted-foreground sm:block">{description}</p>
+      </div>
+    </div>
+  );
+}
 
 export default function BioGenerator() {
   const outputRef = useRef<HTMLDivElement>(null);
@@ -30,259 +34,130 @@ export default function BioGenerator() {
   const [generatedBio, setGeneratedBio] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [charCount, setCharCount] = useState(0);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [isCooldown, setIsCooldown] = useState(false);
 
+  const charCount = aboutYou.length;
+  const currentPlatform = platforms.find((item) => item.value === platform);
+  const charLimit = currentPlatform?.limit ?? 150;
+  const charPercent = Math.min((charCount / charLimit) * 100, 100);
+  const isFormValid = Boolean(platform && aboutYou.trim());
+
   const scrollToOutput = useCallback(() => {
-    if (window.innerWidth < 1024 && outputRef.current) {
-      outputRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
+    if (window.innerWidth < 1024) outputRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
   useEffect(() => {
-    setCharCount(aboutYou.length);
-  }, [aboutYou]);
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-    if (isCooldown && cooldownTimer > 0) {
-      interval = setInterval(() => {
-        setCooldownTimer((timer) => timer - 1);
-      }, 1000);
-    } else if (cooldownTimer === 0) {
-      setIsCooldown(false);
+    if (!isCooldown || cooldownTimer <= 0) {
+      if (cooldownTimer === 0) setIsCooldown(false);
+      return;
     }
+    const interval = setInterval(() => setCooldownTimer((timer) => timer - 1), 1000);
     return () => clearInterval(interval);
   }, [isCooldown, cooldownTimer]);
 
-  const getCurrentPlatform = () => {
-    return (
-      platforms.find((p) => p.value === platform) || {
-        limit: 150,
-      }
-    );
-  };
-
-  const getCharLimitPercent = () => {
-    const currentLimit = getCurrentPlatform().limit;
-    return (charCount / currentLimit) * 100;
-  };
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedBio);
+  const copyToClipboard = async () => {
+    await navigator.clipboard.writeText(generatedBio);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    sonnar("بایو کپی شد", { icon: "✂️" });
+    toast.success("بایو در کلیپ‌بورد کپی شد");
   };
 
   const generateBio = async () => {
     if (isCooldown) {
-      sonnar("لطفا چند لحظه صبر کن و دوباره بزن", { icon: "⏳" });
+      toast("چند لحظه صبر کن و دوباره تلاش کن");
       return;
     }
-
     setIsGenerating(true);
     setIsCooldown(true);
     setError("");
     setNote("");
-    setCooldownTimer(NEXT_PUBLIC_COOLDOWN_TIME);
+    setCooldownTimer(COOLDOWN_TIME);
 
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          aboutYou,
-          platform,
-          tone,
-          language: "persian",
-        }),
+        body: JSON.stringify({ aboutYou, platform, tone, language: "persian" }),
       });
-
-      if (!response.ok) {
-        throw new Error(`خطا در ارتباط با سرور: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`خطا در ارتباط با سرور: ${response.status}`);
       const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
+      if (data.error) throw new Error(data.error);
       setGeneratedBio(data.bio);
-      if (data.note) {
-        setNote(data.note);
-      }
-
-      sonnar.success("بایو ساخته شد!", { duration: 2000 });
+      if (data.note) setNote(data.note);
+      toast.success("بایوی تازه آماده شد");
       setTimeout(scrollToOutput, 100);
     } catch (err) {
-      const errorMessage =
-        err instanceof Error
-          ? err.message
-          : "خطایی در تولید بایو رخ داد. لطفاً دوباره تلاش کنید.";
+      const message = err instanceof Error ? err.message : "خطایی در تولید بایو رخ داد. دوباره تلاش کن.";
       console.error("Error generating bio:", err);
-      setError(errorMessage);
-      sonnar.error("خطایی در تولید بایو رخ داد.");
+      setError(message);
+      toast.error("ساخت بایو ناموفق بود");
       setTimeout(scrollToOutput, 100);
     } finally {
       setIsGenerating(false);
-      setCooldownTimer(NEXT_PUBLIC_COOLDOWN_TIME);
+      setCooldownTimer(COOLDOWN_TIME);
     }
   };
 
-  const isFormValid = platform && aboutYou.trim().length > 0;
-
   return (
     <div dir="rtl" className="min-h-screen bg-background">
-      {/* Subtle background pattern */}
-      <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/[0.03] rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-primary/[0.03] rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-4 sm:py-8">
-        {/* Header */}
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Header />
+        <main className="py-3 sm:py-8 lg:py-10">
+          <section className="mx-auto mb-3 max-w-3xl text-center sm:mb-8">
+            <div className="mb-3 hidden items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary sm:inline-flex">
+              <Sparkles className="size-3.5" aria-hidden="true" />
+              نویسنده هوشمند فارسی
+            </div>
+            <h1 className="text-balance text-xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">چند کلمه از تو، یک بایوی به‌یادماندنی</h1>
+            <p className="mx-auto mt-3 hidden max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:block sm:text-base">برای هر شبکه اجتماعی، بایویی متناسب با شخصیت و هدف تو می‌سازیم؛ سریع، فارسی و آماده انتشار.</p>
+          </section>
 
-        {/* Hero section */}
-        <div className="text-center mb-6 sm:mb-8">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3">
-            <Sparkles className="h-3.5 w-3.5" />
-            هوش مصنوعی
-          </div>
-          <h1 className="text-xl sm:text-3xl font-extrabold text-foreground text-balance mb-2">
-            بایوی حرفه‌ای بساز، سریع و هوشمند
-          </h1>
-          <p className="text-muted-foreground text-xs sm:text-base max-w-lg mx-auto leading-relaxed">
-            بایوهای جذاب و شخصی‌سازی شده برای شبکه‌های اجتماعی بساز
-          </p>
-        </div>
-
-        {/* Main content: Two-panel layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          {/* Left panel: Input & Controls */}
-          <div className="glass-surface rounded-2xl p-4 sm:p-6 lg:p-8 flex flex-col">
-            <div className="space-y-4 sm:space-y-6 flex-1">
-              {/* Platform Selection */}
-              <section>
-                <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <Globe className="h-4 w-4 text-primary" />
-                  <h3 className="font-bold text-foreground text-xs sm:text-sm">
-                    شبکه اجتماعی رو انتخاب کن
-                  </h3>
+          <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,.95fr)] lg:gap-6">
+            <section className="surface-shadow rounded-2xl border bg-card p-3 sm:p-6" aria-label="فرم ساخت بایو">
+              <div className="flex flex-col gap-3 sm:gap-5">
+                <div className="flex flex-col gap-3">
+                  <SectionTitle number="۱" title="مقصد بایو" description="شبکه‌ای که بایو را برای آن می‌خواهی انتخاب کن." />
+                  <PlatformSelector selected={platform} onSelect={setPlatform} />
                 </div>
-                <PlatformSelector
-                  selected={platform}
-                  onSelect={setPlatform}
-                />
-              </section>
-
-              {/* Tone Selection */}
-              <section>
-                <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <Smile className="h-4 w-4 text-primary" />
-                  <h3 className="font-bold text-foreground text-xs sm:text-sm">
-                    نوع بایو رو انتخاب کن
-                  </h3>
+                <div className="h-px bg-border" />
+                <div className="flex flex-col gap-3">
+                  <SectionTitle number="۲" title="لحن نوشته" description="حسی که قرار است از بایوی تو منتقل شود." />
+                  <ToneSelector selected={tone} onSelect={setTone} />
                 </div>
-                <ToneSelector selected={tone} onSelect={setTone} />
-              </section>
-
-              {/* About You Textarea */}
-              <section>
-                <div className="flex items-center justify-between mb-2 sm:mb-3">
-                  <div className="flex items-center gap-2">
-                    <Zap className="h-4 w-4 text-primary" />
-                    <h3 className="font-bold text-foreground text-xs sm:text-sm">
-                      درباره خودت یا پیجت بگو
-                    </h3>
+                <div className="h-px bg-border" />
+                <div className="flex flex-col gap-3">
+                  <SectionTitle number="۳" title="درباره تو یا صفحه‌ات" description="مهارت‌ها، علایق، حوزه فعالیت یا هر نکته مهمی را بنویس." />
+                  <div className="flex flex-col gap-2">
+                    <label htmlFor="about-you" className="sr-only">توضیحات درباره شما یا صفحه شما</label>
+                    <textarea id="about-you" value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder="مثلاً: طراح محصول هستم، درباره تجربه کاربری می‌نویسم و به عکاسی خیابانی علاقه دارم..." className="min-h-20 w-full resize-none sm:min-h-28 rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
+                    <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
+                      <p id="about-help" className="flex items-center gap-1.5"><HelpCircle className="size-3.5" aria-hidden="true" />جزئیات بیشتر، نتیجه دقیق‌تر</p>
+                      <span id="char-count" className={cn("font-medium tabular-nums", charPercent > 90 && "text-destructive")}>{charCount} از {charLimit}</span>
+                    </div>
+                    <div className="h-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="تعداد کاراکترهای واردشده" aria-valuenow={charCount} aria-valuemin={0} aria-valuemax={charLimit}>
+                      <div className={cn("h-full rounded-full bg-primary transition-[width]", charPercent > 90 && "bg-destructive")} style={{ width: `${charPercent}%` }} />
+                    </div>
                   </div>
-                  {platform && (
-                    <span
-                      className={`text-xs font-medium px-2 py-0.5 rounded-full ${
-                        getCharLimitPercent() > 90
-                          ? "bg-destructive/10 text-destructive"
-                          : getCharLimitPercent() > 70
-                          ? "bg-amber-500/10 text-amber-600"
-                          : "bg-emerald-500/10 text-emerald-600"
-                      }`}
-                    >
-                      {charCount} / {getCurrentPlatform().limit}
-                    </span>
-                  )}
                 </div>
-                <textarea
-                  placeholder="ویژگی یا هرچیزی در مورد خودت یا پیجت بگو..."
-                  className="w-full min-h-[90px] sm:min-h-[120px] resize-none rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all duration-200"
-                  value={aboutYou}
-                  onChange={(e) => setAboutYou(e.target.value)}
-                  maxLength={platform ? getCurrentPlatform().limit : 150}
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  هرچه جزئیات بیشتری بنویسی، بایوی بهتری دریافت می‌کنی
-                </p>
-              </section>
 
-              {/* Error */}
-              {error && (
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-destructive/5 border border-destructive/15">
-                  <AlertCircle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
-                  <p className="text-destructive text-sm">{error}</p>
-                </div>
-              )}
+                {error && <div role="alert" className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-sm leading-6 text-destructive"><AlertCircle className="mt-1 size-4 shrink-0" aria-hidden="true" />{error}</div>}
+                {note && <div role="status" className="flex items-start gap-2 rounded-xl border border-primary/20 bg-primary/10 p-3 text-sm leading-6 text-foreground"><CheckCircle2 className="mt-1 size-4 shrink-0 text-primary" aria-hidden="true" />{note}</div>}
 
-              {/* Note */}
-              {note && (
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
-                  <Info className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
-                  <p className="text-amber-700 text-sm">{note}</p>
-                </div>
-              )}
-            </div>
+                <Button type="button" size="lg" className="w-full" onClick={generateBio} disabled={isGenerating || !isFormValid || isCooldown} aria-describedby={!isFormValid ? "form-guidance" : undefined}>
+                  <Sparkles data-icon="inline-start" className={cn(isGenerating && "animate-pulse")} />
+                  {isGenerating ? "در حال نوشتن بایو..." : isCooldown && cooldownTimer > 0 ? `${cooldownTimer} ثانیه تا ساخت بعدی` : "بایوی من را بساز"}
+                </Button>
+                <p id="form-guidance" className="text-center text-xs text-muted-foreground">برای شروع، شبکه اجتماعی و توضیحات را کامل کن.</p>
+              </div>
+            </section>
 
-            {/* CTA Button */}
-            <div className="mt-4 sm:mt-6">
-              <button
-                onClick={generateBio}
-                disabled={isGenerating || !isFormValid || isCooldown}
-                className="w-full flex items-center justify-center gap-2 py-3 sm:py-3.5 px-6 rounded-xl text-sm font-bold bg-primary text-primary-foreground shadow-[0_4px_16px_hsl(var(--primary)/0.3)] hover:shadow-[0_4px_24px_hsl(var(--primary)/0.4)] hover:opacity-95 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
-              >
-                {isGenerating ? (
-                  <>
-                    <RefreshCw className="h-4 w-4 animate-spin" />
-                    در حال ساخت...
-                  </>
-                ) : isCooldown && cooldownTimer > 0 ? (
-                  <>{cooldownTimer} ثانیه دیگر</>
-                ) : (
-                  <>
-                    <Sparkles className="h-4 w-4" />
-                    ساخت بایو
-                  </>
-                )}
-              </button>
+            <div ref={outputRef} className="scroll-mt-4 lg:sticky lg:top-6">
+              <OutputPanel generatedBio={generatedBio} platform={platform} tone={tone} copied={copied} isGenerating={isGenerating} error={error} onCopy={copyToClipboard} onRegenerate={generateBio} />
             </div>
           </div>
-
-          {/* Right panel: Output */}
-          <div ref={outputRef} className="glass-surface rounded-2xl p-4 sm:p-6 lg:p-8">
-            <OutputPanel
-              generatedBio={generatedBio}
-              platform={platform}
-              tone={tone}
-              copied={copied}
-              isGenerating={isGenerating}
-              error={error}
-              onCopy={copyToClipboard}
-              onRegenerate={generateBio}
-            />
-          </div>
-        </div>
-
-        {/* Footer */}
+        </main>
         <Footer />
       </div>
     </div>

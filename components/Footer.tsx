@@ -1,25 +1,11 @@
 export default function Footer() {
   return (
-    <footer className="flex items-center justify-between py-6 text-xs text-muted-foreground">
+    <footer className="flex flex-col items-center justify-between gap-2 border-t border-border/80 py-4 text-center text-sm text-muted-foreground sm:flex-row sm:text-start">
       <p>
-        {"طراحی و پیاده سازی توسط "}
-        <a
-          href="https://github.com/ehsanghaffar"
-          target="_blank"
-          rel="noreferrer"
-          className="font-semibold text-primary hover:underline underline-offset-2 transition-colors"
-        >
-          عین
-        </a>
+        طراحی و توسعه توسط{" "}
+        <a href="https://github.com/ehsanghaffar" target="_blank" rel="noreferrer" className="font-semibold text-foreground underline-offset-4 hover:underline">عین</a>
       </p>
-      <p className="hidden sm:block">
-        {"منبع باز تحت "}
-        <span
-          className="font-semibold text-primary hover:underline underline-offset-2 transition-colors"
-        >
-          MIT License
-        </span>
-      </p>
+      <a href="https://github.com/ehsanghaffar/einbiogpt" target="_blank" rel="noreferrer" className="underline-offset-4 hover:text-foreground hover:underline">متن‌باز با مجوز MIT</a>
     </footer>
   );
 }

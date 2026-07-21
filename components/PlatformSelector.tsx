@@ -11,66 +11,23 @@ export interface Platform {
 }
 
 export const platforms: Platform[] = [
-  {
-    value: "instagram",
-    label: "اینستاگرام",
-    icon: <Instagram className="h-4 w-4" />,
-    limit: 150,
-  },
-  {
-    value: "twitter",
-    label: "توییتر/ایکس",
-    icon: <Twitter className="h-4 w-4" />,
-    limit: 160,
-  },
-  {
-    value: "linkedin",
-    label: "لینکدین",
-    icon: <Linkedin className="h-4 w-4" />,
-    limit: 220,
-  },
-  {
-    value: "telegram",
-    label: "تلگرام",
-    icon: <MessageCircle className="h-4 w-4" />,
-    limit: 70,
-  },
+  { value: "instagram", label: "اینستاگرام", icon: <Instagram aria-hidden="true" />, limit: 150 },
+  { value: "twitter", label: "توییتر / ایکس", icon: <Twitter aria-hidden="true" />, limit: 160 },
+  { value: "linkedin", label: "لینکدین", icon: <Linkedin aria-hidden="true" />, limit: 220 },
+  { value: "telegram", label: "تلگرام", icon: <MessageCircle aria-hidden="true" />, limit: 70 },
 ];
 
-interface PlatformSelectorProps {
-  selected: string;
-  onSelect: (value: string) => void;
-}
+interface PlatformSelectorProps { selected: string; onSelect: (value: string) => void }
 
-export default function PlatformSelector({
-  selected,
-  onSelect,
-}: PlatformSelectorProps) {
+export default function PlatformSelector({ selected, onSelect }: PlatformSelectorProps) {
   return (
-    <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-      {platforms.map((plat) => {
-        const isActive = selected === plat.value;
+    <div className="grid grid-cols-4 gap-1.5 sm:gap-2 lg:grid-cols-2 xl:grid-cols-4" role="group" aria-label="انتخاب شبکه اجتماعی">
+      {platforms.map((item) => {
+        const active = selected === item.value;
         return (
-          <button
-            key={plat.value}
-            onClick={() => onSelect(plat.value)}
-            className={cn(
-              "relative flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium",
-              "transition-all duration-200 ease-out cursor-pointer",
-              "border",
-              isActive
-                ? "bg-primary text-primary-foreground border-primary shadow-[0_2px_12px_hsl(var(--primary)/0.25)]"
-                : "bg-card text-foreground border-border hover:border-primary/30 hover:bg-accent"
-            )}
-          >
-            <span
-              className={cn(
-                isActive ? "text-primary-foreground" : "text-muted-foreground"
-              )}
-            >
-              {plat.icon}
-            </span>
-            <span>{plat.label}</span>
+          <button key={item.value} type="button" onClick={() => onSelect(item.value)} aria-pressed={active} className={cn("flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border px-1 text-[11px] font-medium leading-tight transition-colors sm:flex-row sm:gap-2 sm:px-4 sm:text-sm", active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-card-foreground hover:border-primary/50 hover:bg-accent")}>
+            <span className="[&_svg]:size-4">{item.icon}</span>
+            <span>{item.label}</span>
           </button>
         );
       })}

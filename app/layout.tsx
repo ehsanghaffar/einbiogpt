@@ -10,8 +10,8 @@ const siteUrl = "https://bio.eindev.ir";
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f0f1f5" },
-    { media: "(prefers-color-scheme: dark)", color: "#121520" },
+    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#10141e" },
   ],
   width: "device-width",
   initialScale: 1,
@@ -108,7 +108,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl" suppressHydrationWarning>
+    <html lang="fa" dir="rtl" className="bg-background" suppressHydrationWarning>
       <head>
         <ThemeScript />
         <script
