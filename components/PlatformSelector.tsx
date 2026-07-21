@@ -21,7 +21,7 @@ interface PlatformSelectorProps { selected: string; onSelect: (value: string) =>
 
 export default function PlatformSelector({ selected, onSelect }: PlatformSelectorProps) {
   return (
-    <div className="grid grid-cols-2 gap-2" role="group" aria-label="انتخاب شبکه اجتماعی">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4" role="group" aria-label="انتخاب شبکه اجتماعی">
       {platforms.map((item) => {
         const active = selected === item.value;
         return (

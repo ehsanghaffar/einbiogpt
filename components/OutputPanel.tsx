@@ -17,8 +17,8 @@ export default function OutputPanel({ generatedBio, platform, tone, copied, isGe
   const ToneIcon = currentTone?.icon;
 
   return (
-    <section className="surface-shadow flex min-h-[540px] flex-col rounded-2xl border bg-card p-5 sm:p-7" aria-labelledby="output-title" aria-live="polite">
-      <header className="flex items-center justify-between gap-3 border-b pb-5">
+    <section className="surface-shadow flex min-h-[440px] flex-col rounded-2xl border bg-card p-5 sm:p-6" aria-labelledby="output-title" aria-live="polite">
+      <header className="flex items-center justify-between gap-3 border-b pb-4">
         <div className="flex items-center gap-3">
           <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"><Sparkles className="size-4" aria-hidden="true" /></span>
           <div><h2 id="output-title" className="text-sm font-bold">بایوی پیشنهادی</h2><p className="mt-0.5 text-xs text-muted-foreground">آماده برای ویرایش یا انتشار</p></div>
@@ -26,7 +26,7 @@ export default function OutputPanel({ generatedBio, platform, tone, copied, isGe
         {currentTone && ToneIcon && <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-secondary-foreground"><ToneIcon className="size-3.5" aria-hidden="true" />{currentTone.label}</span>}
       </header>
 
-      <div className="flex flex-1 flex-col pt-5">
+      <div className="flex flex-1 flex-col pt-4">
         {isGenerating ? (
           <div role="status" className="flex flex-1 flex-col gap-6">
             <div><p className="text-sm font-semibold text-foreground">در حال پیدا کردن بهترین واژه‌ها...</p><p className="mt-1 text-xs text-muted-foreground">چند ثانیه با ما همراه باش.</p></div>

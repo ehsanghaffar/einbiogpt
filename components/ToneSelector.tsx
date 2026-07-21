@@ -16,7 +16,7 @@ interface ToneSelectorProps { selected: string; onSelect: (value: string) => voi
 
 export default function ToneSelector({ selected, onSelect }: ToneSelectorProps) {
   return (
-    <div className="grid grid-cols-2 gap-2" role="group" aria-label="انتخاب لحن بایو">
+    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4" role="group" aria-label="انتخاب لحن بایو">
       {tones.map((item) => {
         const Icon = item.icon;
         const active = selected === item.value;

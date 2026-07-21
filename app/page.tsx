@@ -104,34 +104,34 @@ export default function BioGenerator() {
     <div dir="rtl" className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Header />
-        <main className="py-10 sm:py-14 lg:py-16">
-          <section className="mx-auto mb-10 max-w-3xl text-center sm:mb-12">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+        <main className="py-6 sm:py-8 lg:py-10">
+          <section className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
               <Sparkles className="size-3.5" aria-hidden="true" />
               نویسنده هوشمند فارسی
             </div>
-            <h1 className="text-balance text-3xl font-black leading-tight tracking-tight text-foreground sm:text-5xl">چند کلمه از تو، یک بایوی به‌یادماندنی</h1>
-            <p className="mx-auto mt-4 max-w-2xl text-pretty text-sm leading-7 text-muted-foreground sm:text-base">برای هر شبکه اجتماعی، بایویی متناسب با شخصیت و هدف تو می‌سازیم؛ سریع، فارسی و آماده انتشار.</p>
+            <h1 className="text-balance text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">چند کلمه از تو، یک بایوی به‌یادماندنی</h1>
+            <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base">برای هر شبکه اجتماعی، بایویی متناسب با شخصیت و هدف تو می‌سازیم؛ سریع، فارسی و آماده انتشار.</p>
           </section>
 
           <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,.95fr)] lg:gap-6">
-            <section className="surface-shadow rounded-2xl border bg-card p-5 sm:p-7" aria-label="فرم ساخت بایو">
-              <div className="flex flex-col gap-7">
-                <div className="flex flex-col gap-4">
+            <section className="surface-shadow rounded-2xl border bg-card p-5 sm:p-6" aria-label="فرم ساخت بایو">
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-3">
                   <SectionTitle number="۱" title="مقصد بایو" description="شبکه‌ای که بایو را برای آن می‌خواهی انتخاب کن." />
                   <PlatformSelector selected={platform} onSelect={setPlatform} />
                 </div>
                 <div className="h-px bg-border" />
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   <SectionTitle number="۲" title="لحن نوشته" description="حسی که قرار است از بایوی تو منتقل شود." />
                   <ToneSelector selected={tone} onSelect={setTone} />
                 </div>
                 <div className="h-px bg-border" />
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   <SectionTitle number="۳" title="درباره تو یا صفحه‌ات" description="مهارت‌ها، علایق، حوزه فعالیت یا هر نکته مهمی را بنویس." />
                   <div className="flex flex-col gap-2">
                     <label htmlFor="about-you" className="sr-only">توضیحات درباره شما یا صفحه شما</label>
-                    <textarea id="about-you" value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder="مثلاً: طراح محصول هستم، درباره تجربه کاربری می‌نویسم و به عکاسی خیابانی علاقه دارم..." className="min-h-36 w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
+                    <textarea id="about-you" value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder="مثلاً: طراح محصول هستم، درباره تجربه کاربری می‌نویسم و به عکاسی خیابانی علاقه دارم..." className="min-h-28 w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
                     <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                       <p id="about-help" className="flex items-center gap-1.5"><HelpCircle className="size-3.5" aria-hidden="true" />جزئیات بیشتر، نتیجه دقیق‌تر</p>
                       <span id="char-count" className={cn("font-medium tabular-nums", charPercent > 90 && "text-destructive")}>{charCount} از {charLimit}</span>
