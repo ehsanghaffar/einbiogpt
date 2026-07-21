@@ -21,11 +21,11 @@ interface PlatformSelectorProps { selected: string; onSelect: (value: string) =>
 
 export default function PlatformSelector({ selected, onSelect }: PlatformSelectorProps) {
   return (
-    <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4" role="group" aria-label="انتخاب شبکه اجتماعی">
+    <div className="grid grid-cols-4 gap-1.5 sm:gap-2 lg:grid-cols-2 xl:grid-cols-4" role="group" aria-label="انتخاب شبکه اجتماعی">
       {platforms.map((item) => {
         const active = selected === item.value;
         return (
-          <button key={item.value} type="button" onClick={() => onSelect(item.value)} aria-pressed={active} className={cn("flex min-h-12 items-center gap-2 rounded-xl border px-3 text-sm font-medium transition-colors sm:px-4", active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-card-foreground hover:border-primary/50 hover:bg-accent")}>
+          <button key={item.value} type="button" onClick={() => onSelect(item.value)} aria-pressed={active} className={cn("flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl border px-1 text-[11px] font-medium leading-tight transition-colors sm:flex-row sm:gap-2 sm:px-4 sm:text-sm", active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-card-foreground hover:border-primary/50 hover:bg-accent")}>
             <span className="[&_svg]:size-4">{item.icon}</span>
             <span>{item.label}</span>
           </button>

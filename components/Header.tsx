@@ -4,7 +4,7 @@ import { ThemeToggle } from "./theme/ThemeToggle";
 
 export default function Header() {
   return (
-    <header className="flex h-16 items-center justify-between border-b border-border/80" aria-label="سربرگ اصلی">
+    <header className="flex h-14 items-center justify-between border-b border-border/80 sm:h-16" aria-label="سربرگ اصلی">
       <Link href="/" className="flex items-center gap-3 rounded-lg" aria-label="Ein Bio، صفحه اصلی">
         <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <Sparkles className="size-4" aria-hidden="true" />

@@ -15,11 +15,11 @@ const COOLDOWN_TIME = Number(process.env.NEXT_PUBLIC_COOLDOWN_TIME || 10);
 
 function SectionTitle({ number, title, description }: { number: string; title: string; description: string }) {
   return (
-    <div className="flex items-start gap-3">
-      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary">{number}</span>
+    <div className="flex items-center gap-2 sm:items-start sm:gap-3">
+      <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-secondary text-xs font-bold text-primary sm:size-7">{number}</span>
       <div className="flex flex-col gap-1">
         <h2 className="text-sm font-bold text-foreground">{title}</h2>
-        <p className="text-xs leading-5 text-muted-foreground">{description}</p>
+        <p className="hidden text-xs leading-5 text-muted-foreground sm:block">{description}</p>
       </div>
     </div>
   );
@@ -104,19 +104,19 @@ export default function BioGenerator() {
     <div dir="rtl" className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Header />
-        <main className="py-6 sm:py-8 lg:py-10">
-          <section className="mx-auto mb-6 max-w-3xl text-center sm:mb-8">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+        <main className="py-3 sm:py-8 lg:py-10">
+          <section className="mx-auto mb-3 max-w-3xl text-center sm:mb-8">
+            <div className="mb-3 hidden items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary sm:inline-flex">
               <Sparkles className="size-3.5" aria-hidden="true" />
               نویسنده هوشمند فارسی
             </div>
-            <h1 className="text-balance text-3xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">چند کلمه از تو، یک بایوی به‌یادماندنی</h1>
-            <p className="mx-auto mt-3 max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:text-base">برای هر شبکه اجتماعی، بایویی متناسب با شخصیت و هدف تو می‌سازیم؛ سریع، فارسی و آماده انتشار.</p>
+            <h1 className="text-balance text-xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">چند کلمه از تو، یک بایوی به‌یادماندنی</h1>
+            <p className="mx-auto mt-3 hidden max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:block sm:text-base">برای هر شبکه اجتماعی، بایویی متناسب با شخصیت و هدف تو می‌سازیم؛ سریع، فارسی و آماده انتشار.</p>
           </section>
 
           <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,.95fr)] lg:gap-6">
-            <section className="surface-shadow rounded-2xl border bg-card p-5 sm:p-6" aria-label="فرم ساخت بایو">
-              <div className="flex flex-col gap-5">
+            <section className="surface-shadow rounded-2xl border bg-card p-3 sm:p-6" aria-label="فرم ساخت بایو">
+              <div className="flex flex-col gap-3 sm:gap-5">
                 <div className="flex flex-col gap-3">
                   <SectionTitle number="۱" title="مقصد بایو" description="شبکه‌ای که بایو را برای آن می‌خواهی انتخاب کن." />
                   <PlatformSelector selected={platform} onSelect={setPlatform} />
@@ -131,7 +131,7 @@ export default function BioGenerator() {
                   <SectionTitle number="۳" title="درباره تو یا صفحه‌ات" description="مهارت‌ها، علایق، حوزه فعالیت یا هر نکته مهمی را بنویس." />
                   <div className="flex flex-col gap-2">
                     <label htmlFor="about-you" className="sr-only">توضیحات درباره شما یا صفحه شما</label>
-                    <textarea id="about-you" value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder="مثلاً: طراح محصول هستم، درباره تجربه کاربری می‌نویسم و به عکاسی خیابانی علاقه دارم..." className="min-h-28 w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
+                    <textarea id="about-you" value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder="مثلاً: طراح محصول هستم، درباره تجربه کاربری می‌نویسم و به عکاسی خیابانی علاقه دارم..." className="min-h-20 w-full resize-none sm:min-h-28 rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
                     <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
                       <p id="about-help" className="flex items-center gap-1.5"><HelpCircle className="size-3.5" aria-hidden="true" />جزئیات بیشتر، نتیجه دقیق‌تر</p>
                       <span id="char-count" className={cn("font-medium tabular-nums", charPercent > 90 && "text-destructive")}>{charCount} از {charLimit}</span>
