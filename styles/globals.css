@@ -2,181 +2,82 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn%5Bwght%5D.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
-    --background: 225 15% 96%;
-    --foreground: 225 25% 12%;
-
+    --background: 40 30% 98%;
+    --foreground: 222 28% 13%;
     --card: 0 0% 100%;
-    --card-foreground: 225 25% 12%;
-
+    --card-foreground: 222 28% 13%;
     --popover: 0 0% 100%;
-    --popover-foreground: 225 25% 12%;
-
-    --primary: 230 65% 55%;
+    --popover-foreground: 222 28% 13%;
+    --primary: 231 68% 52%;
     --primary-foreground: 0 0% 100%;
-
-    --secondary: 225 15% 92%;
-    --secondary-foreground: 225 25% 20%;
-
-    --muted: 225 12% 90%;
-    --muted-foreground: 225 10% 46%;
-
-    --accent: 225 15% 92%;
-    --accent-foreground: 225 25% 20%;
-
-    --destructive: 0 72% 51%;
+    --secondary: 225 24% 94%;
+    --secondary-foreground: 222 24% 20%;
+    --muted: 225 20% 95%;
+    --muted-foreground: 220 11% 44%;
+    --accent: 225 24% 92%;
+    --accent-foreground: 231 68% 42%;
+    --destructive: 2 68% 48%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 225 15% 88%;
-    --input: 225 15% 88%;
-    --ring: 230 65% 55%;
-
-    --radius: 0.75rem;
-
-    --surface-elevated: 0 0% 100%;
-    --surface-subtle: 225 15% 97%;
+    --border: 225 18% 87%;
+    --input: 225 18% 84%;
+    --ring: 231 68% 52%;
+    --radius: 0.875rem;
   }
 
   .dark {
-    --background: 225 25% 8%;
-    --foreground: 225 10% 92%;
-
-    --card: 225 20% 12%;
-    --card-foreground: 225 10% 92%;
-
-    --popover: 225 20% 12%;
-    --popover-foreground: 225 10% 92%;
-
-    --primary: 230 65% 60%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 225 15% 16%;
-    --secondary-foreground: 225 10% 85%;
-
-    --muted: 225 15% 16%;
-    --muted-foreground: 225 10% 55%;
-
-    --accent: 225 15% 16%;
-    --accent-foreground: 225 10% 85%;
-
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 225 15% 18%;
-    --input: 225 15% 18%;
-    --ring: 230 65% 60%;
-
-    --surface-elevated: 225 20% 14%;
-    --surface-subtle: 225 20% 10%;
+    --background: 222 29% 9%;
+    --foreground: 220 20% 94%;
+    --card: 222 25% 12%;
+    --card-foreground: 220 20% 94%;
+    --popover: 222 25% 12%;
+    --popover-foreground: 220 20% 94%;
+    --primary: 231 76% 67%;
+    --primary-foreground: 222 29% 9%;
+    --secondary: 222 20% 17%;
+    --secondary-foreground: 220 18% 90%;
+    --muted: 222 20% 16%;
+    --muted-foreground: 220 12% 64%;
+    --accent: 222 20% 19%;
+    --accent-foreground: 231 76% 75%;
+    --destructive: 2 66% 58%;
+    --destructive-foreground: 222 29% 9%;
+    --border: 222 17% 22%;
+    --input: 222 17% 25%;
+    --ring: 231 76% 67%;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-/* Vazirmatn Persian font */
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Regular.woff2")
-    format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Medium.woff2")
-    format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-Bold.woff2")
-    format("woff2");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Vazirmatn";
-  src: url("https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/fonts/webfonts/Vazirmatn-ExtraBold.woff2")
-    format("woff2");
-  font-weight: 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-body {
-  font-family: "Vazirmatn", system-ui, sans-serif;
+  * { @apply border-border; }
+  html { color-scheme: light; scroll-behavior: smooth; }
+  html.dark { color-scheme: dark; }
+  body { @apply bg-background font-sans text-foreground antialiased; }
+  button, a, textarea { @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background; }
+  ::selection { @apply bg-primary text-primary-foreground; }
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { @apply bg-background; }
+  ::-webkit-scrollbar-thumb { @apply rounded-full bg-border; }
 }
 
 @layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+  .text-balance { text-wrap: balance; }
+  .text-pretty { text-wrap: pretty; }
+  .surface-shadow { box-shadow: 0 18px 60px -32px hsl(222 28% 13% / 0.28); }
 }
 
-/* Glass morphism utilities */
-@layer utilities {
-  .glass-surface {
-    @apply bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.06)];
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-
-  .dark .glass-surface {
-    @apply bg-white/5 border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.3)];
-  }
-
-  /* Scrollbar styling for better dark mode appearance */
-  ::-webkit-scrollbar {
-    @apply w-2;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-background;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-border rounded-full hover:bg-muted-foreground transition-colors;
-  }
-
-  .dark ::-webkit-scrollbar-track {
-    @apply bg-background;
-  }
-
-  .dark ::-webkit-scrollbar-thumb {
-    @apply bg-muted hover:bg-muted-foreground transition-colors;
-  }
-}
-
-/* Smooth theme transitions */
-html {
-  color-scheme: light dark;
-}
-
-html.dark {
-  color-scheme: dark;
-}
-
-/* Ensure inputs and textareas respect theme */
-input,
-textarea,
-select {
-  @apply bg-background text-foreground;
-}
-
-/* Selection highlight respects theme */
-::selection {
-  @apply bg-primary text-primary-foreground;
 }

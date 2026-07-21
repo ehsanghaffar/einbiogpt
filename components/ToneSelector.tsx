@@ -1,48 +1,29 @@
 "use client";
 
+import { Briefcase, Lightbulb, MessageCircle, Smile } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export interface Tone {
-  value: string;
-  label: string;
-  emoji: string;
-}
+export interface Tone { value: string; label: string; icon: React.ElementType }
 
 export const tones: Tone[] = [
-  { value: "professional", label: "حرفه‌ای", emoji: "💼" },
-  { value: "friendly", label: "دوستانه", emoji: "😊" },
-  { value: "creative", label: "خلاقانه", emoji: "🎨" },
-  { value: "humorous", label: "طنز", emoji: "😂" },
+  { value: "professional", label: "حرفه‌ای", icon: Briefcase },
+  { value: "friendly", label: "دوستانه", icon: Smile },
+  { value: "creative", label: "خلاقانه", icon: Lightbulb },
+  { value: "humorous", label: "طنز", icon: MessageCircle },
 ];
 
-interface ToneSelectorProps {
-  selected: string;
-  onSelect: (value: string) => void;
-}
+interface ToneSelectorProps { selected: string; onSelect: (value: string) => void }
 
-export default function ToneSelector({
-  selected,
-  onSelect,
-}: ToneSelectorProps) {
+export default function ToneSelector({ selected, onSelect }: ToneSelectorProps) {
   return (
-    <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2">
-      {tones.map((t) => {
-        const isActive = selected === t.value;
+    <div className="grid grid-cols-2 gap-2" role="group" aria-label="انتخاب لحن بایو">
+      {tones.map((item) => {
+        const Icon = item.icon;
+        const active = selected === item.value;
         return (
-          <button
-            key={t.value}
-            onClick={() => onSelect(t.value)}
-            className={cn(
-              "flex items-center justify-center sm:justify-start gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium",
-              "transition-all duration-200 ease-out cursor-pointer",
-              "border",
-              isActive
-                ? "bg-primary text-primary-foreground border-primary shadow-[0_2px_12px_hsl(var(--primary)/0.25)]"
-                : "bg-card text-foreground border-border hover:border-primary/30 hover:bg-accent"
-            )}
-          >
-            <span className="text-base">{t.emoji}</span>
-            <span>{t.label}</span>
+          <button key={item.value} type="button" onClick={() => onSelect(item.value)} aria-pressed={active} className={cn("flex min-h-12 items-center gap-2 rounded-xl border px-3 text-sm font-medium transition-colors sm:px-4", active ? "border-primary bg-primary text-primary-foreground" : "border-input bg-card text-card-foreground hover:border-primary/50 hover:bg-accent")}>
+            <Icon className="size-4" aria-hidden="true" />
+            <span>{item.label}</span>
           </button>
         );
       })}

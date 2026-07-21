@@ -1,26 +1,18 @@
 import Link from "next/link";
+import { ArrowRight, SearchX } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export default function NotFound() {
   return (
-    <div className="flex mx-auto my-10 items-center justify-center">
-      <div className=" text-center">
-        <h1 className="text-9xl font-black text-gray-200">404</h1>
-
-        <p className="text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-          اوه، نه!
-        </p>
-
-        <p className="mt-4 text-gray-500">
-          هیچی اینجا نیست.
-        </p>
-
-        <Link
-          href="/"
-          className="mt-6 inline-block rounded bg-indigo-600 px-5 py-3 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring"
-        >
-          برگرد به صفحه اصلی
-        </Link>
-      </div>
-    </div>
+    <main dir="rtl" className="flex min-h-screen items-center justify-center bg-background px-4">
+      <section className="surface-shadow w-full max-w-lg rounded-2xl border bg-card p-8 text-center sm:p-10">
+        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-secondary text-primary"><SearchX className="size-6" aria-hidden="true" /></span>
+        <p className="mt-5 text-sm font-bold text-primary">خطای ۴۰۴</p>
+        <h1 className="mt-2 text-2xl font-black">این صفحه پیدا نشد</h1>
+        <p className="mt-3 text-sm leading-7 text-muted-foreground">ممکن است آدرس تغییر کرده باشد یا این صفحه دیگر وجود نداشته باشد.</p>
+        <Link href="/" className={cn(buttonVariants(), "mt-6")}><ArrowRight data-icon="inline-start" />بازگشت به صفحه اصلی</Link>
+      </section>
+    </main>
   );
 }

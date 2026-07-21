@@ -1,182 +1,65 @@
 "use client";
 
-import { AlertCircle, Check, Copy, RefreshCw, Sparkles } from "lucide-react";
+import { AlertCircle, Check, Copy, RefreshCw, Sparkles, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { platforms } from "./PlatformSelector";
 import { tones } from "./ToneSelector";
 
 interface OutputPanelProps {
-  generatedBio: string;
-  platform: string;
-  tone: string;
-  copied: boolean;
-  isGenerating: boolean;
-  error: string;
-  onCopy: () => void;
-  onRegenerate: () => void;
+  generatedBio: string; platform: string; tone: string; copied: boolean;
+  isGenerating: boolean; error: string; onCopy: () => void; onRegenerate: () => void;
 }
 
-export default function OutputPanel({
-  generatedBio,
-  platform,
-  tone,
-  copied,
-  isGenerating,
-  error,
-  onCopy,
-  onRegenerate,
-}: OutputPanelProps) {
-  const currentPlatform = platforms.find((p) => p.value === platform);
-  const currentTone = tones.find((t) => t.value === tone);
+export default function OutputPanel({ generatedBio, platform, tone, copied, isGenerating, error, onCopy, onRegenerate }: OutputPanelProps) {
+  const currentPlatform = platforms.find((item) => item.value === platform);
+  const currentTone = tones.find((item) => item.value === tone);
+  const ToneIcon = currentTone?.icon;
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Panel header */}
-      <div className="flex items-center justify-between mb-4 sm:mb-6">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-primary/10">
-            <Sparkles className="h-4 w-4 text-primary" />
-          </div>
-          <h3 className="font-bold text-foreground text-sm">
-            نتیجه تولید شده
-          </h3>
+    <section className="surface-shadow flex min-h-[540px] flex-col rounded-2xl border bg-card p-5 sm:p-7" aria-labelledby="output-title" aria-live="polite">
+      <header className="flex items-center justify-between gap-3 border-b pb-5">
+        <div className="flex items-center gap-3">
+          <span className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"><Sparkles className="size-4" aria-hidden="true" /></span>
+          <div><h2 id="output-title" className="text-sm font-bold">بایوی پیشنهادی</h2><p className="mt-0.5 text-xs text-muted-foreground">آماده برای ویرایش یا انتشار</p></div>
         </div>
-        {currentTone && (
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground">
-            <span>{currentTone.emoji}</span>
-            {currentTone.label}
-          </span>
-        )}
-      </div>
+        {currentTone && ToneIcon && <span className="flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1.5 text-xs font-medium text-secondary-foreground"><ToneIcon className="size-3.5" aria-hidden="true" />{currentTone.label}</span>}
+      </header>
 
-      {/* Content */}
-      <div className="flex-1 flex flex-col gap-4">
+      <div className="flex flex-1 flex-col pt-5">
         {isGenerating ? (
-          /* Loading skeleton */
-          <div className="flex-1 flex flex-col gap-3 animate-in fade-in duration-300">
-            <div className="h-4 w-3/4 bg-muted rounded-lg animate-pulse" />
-            <div className="h-4 w-full bg-muted rounded-lg animate-pulse" />
-            <div className="h-4 w-5/6 bg-muted rounded-lg animate-pulse" />
-            <div className="h-4 w-2/3 bg-muted rounded-lg animate-pulse" />
+          <div role="status" className="flex flex-1 flex-col gap-6">
+            <div><p className="text-sm font-semibold text-foreground">در حال پیدا کردن بهترین واژه‌ها...</p><p className="mt-1 text-xs text-muted-foreground">چند ثانیه با ما همراه باش.</p></div>
+            <div className="flex flex-col gap-3 rounded-xl bg-muted p-5">
+              <div className="h-3 w-4/5 animate-pulse rounded bg-border" /><div className="h-3 w-full animate-pulse rounded bg-border" /><div className="h-3 w-3/5 animate-pulse rounded bg-border" />
+            </div>
           </div>
         ) : error ? (
-          /* Error state */
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-8 sm:py-12 animate-in fade-in duration-300">
-            <div className="p-4 rounded-2xl bg-destructive/5 border border-destructive/10 mb-4">
-              <AlertCircle className="h-8 w-8 text-destructive/60" />
-            </div>
-            <p className="text-foreground text-sm font-medium mb-1">
-              مشکلی پیش آمد
-            </p>
-            <p className="text-muted-foreground text-xs max-w-xs leading-relaxed mb-4">
-              {error}
-            </p>
-            <button
-              onClick={onRegenerate}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-primary text-primary-foreground hover:opacity-90 transition-all duration-200"
-            >
-              <RefreshCw className="h-3.5 w-3.5" />
-              تلاش دوباره
-            </button>
+          <div role="alert" className="flex flex-1 flex-col items-center justify-center text-center">
+            <span className="mb-4 flex size-14 items-center justify-center rounded-full bg-destructive/10 text-destructive"><AlertCircle className="size-6" aria-hidden="true" /></span>
+            <h3 className="font-bold">نتوانستیم بایو را بسازیم</h3><p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">{error}</p>
+            <Button type="button" variant="outline" className="mt-5" onClick={onRegenerate}><RefreshCw data-icon="inline-start" />تلاش دوباره</Button>
           </div>
         ) : generatedBio ? (
-          /* Success state */
-          <div className="flex-1 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="relative p-3 sm:p-5 bg-secondary/50 rounded-2xl border border-border">
-              <p className="text-foreground leading-relaxed text-sm">
-                {generatedBio}
-              </p>
-              <div className="mt-4 flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">
-                  {generatedBio.length} کاراکتر
-                  {currentPlatform && (
-                    <span>
-                      {" "}
-                      / {currentPlatform.limit} محدودیت{" "}
-                      {currentPlatform.label}
-                    </span>
-                  )}
-                </span>
-              </div>
-            </div>
-
-            {/* Platform preview */}
-            {currentPlatform && (
-              <div className="mt-3 sm:mt-4 p-3 sm:p-4 rounded-2xl border border-border bg-card animate-in fade-in slide-in-from-bottom-1 duration-300 delay-150">
-                <p className="text-xs text-muted-foreground mb-3 font-medium">
-                  پیش‌نمایش در {currentPlatform.label}
-                </p>
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0">
-                    <span className="text-xs text-muted-foreground font-medium">
-                      شما
-                    </span>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-bold text-sm text-foreground">
-                      نام کاربری شما
-                    </p>
-                    <p className="text-xs text-muted-foreground mb-1">
-                      @username
-                    </p>
-                    <p className="text-sm text-foreground leading-relaxed">
-                      {generatedBio}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+          <div className="flex flex-1 flex-col gap-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="rounded-xl border bg-background p-5"><p className="text-pretty text-base leading-8 text-foreground">{generatedBio}</p><p className="mt-4 border-t pt-3 text-xs text-muted-foreground">{generatedBio.length} کاراکتر{currentPlatform ? ` از سقف ${currentPlatform.limit} کاراکتر ${currentPlatform.label}` : ""}</p></div>
+            {currentPlatform && <div className="rounded-xl bg-secondary/70 p-4"><p className="mb-3 text-xs font-semibold text-muted-foreground">پیش‌نمایش در {currentPlatform.label}</p><div className="flex items-start gap-3"><span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card text-muted-foreground"><UserRound className="size-5" aria-hidden="true" /></span><div className="min-w-0"><p className="text-sm font-bold">نام شما</p><p dir="ltr" className="text-left text-xs text-muted-foreground">@username</p><p className="mt-2 whitespace-pre-wrap text-sm leading-7">{generatedBio}</p></div></div></div>}
           </div>
         ) : (
-          /* Empty state */
-          <div className="flex-1 flex flex-col items-center justify-center text-center py-8 sm:py-12">
-            <div className="p-4 rounded-2xl bg-muted/50 mb-4">
-              <Sparkles className="h-8 w-8 text-muted-foreground/50" />
-            </div>
-            <p className="text-muted-foreground text-sm">
-              بایو تولید شده اینجا نمایش داده می‌شود
-            </p>
-            <p className="text-muted-foreground/60 text-xs mt-1">
-              اطلاعاتت رو وارد کن و دکمه ساخت بایو رو بزن
-            </p>
-          </div>
-        )}
-
-        {/* Action buttons */}
-        {generatedBio && !isGenerating && !error && (
-          <div className="flex gap-3 pt-2 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-200">
-            <button
-              onClick={onCopy}
-              className={cn(
-                "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium",
-                "transition-all duration-200",
-                copied
-                  ? "bg-emerald-500/10 text-emerald-600 border border-emerald-500/20"
-                  : "bg-primary text-primary-foreground hover:opacity-90"
-              )}
-            >
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4" />
-                  کپی شد
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4" />
-                  کپی بایو
-                </>
-              )}
-            </button>
-            <button
-              onClick={onRegenerate}
-              className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-border bg-card text-foreground hover:bg-accent transition-all duration-200"
-            >
-              <RefreshCw className="h-4 w-4" />
-              ساخت مجدد
-            </button>
+          <div className="flex flex-1 flex-col items-center justify-center text-center">
+            <span className="mb-5 flex size-16 items-center justify-center rounded-full border bg-secondary text-primary"><Sparkles className="size-7" aria-hidden="true" /></span>
+            <h3 className="font-bold text-foreground">جای بایوی تو اینجاست</h3>
+            <p className="mt-2 max-w-xs text-sm leading-7 text-muted-foreground">سه مرحله روبه‌رو را کامل کن تا یک بایوی شخصی‌سازی‌شده تحویل بگیری.</p>
           </div>
         )}
       </div>
-    </div>
+
+      {generatedBio && !isGenerating && !error && <footer className="mt-5 grid grid-cols-[1fr_auto] gap-2 border-t pt-5">
+        <Button type="button" onClick={onCopy} className={cn(copied && "bg-secondary text-secondary-foreground hover:bg-secondary")}>
+          {copied ? <Check data-icon="inline-start" /> : <Copy data-icon="inline-start" />}{copied ? "کپی شد" : "کپی بایو"}
+        </Button>
+        <Button type="button" variant="outline" onClick={onRegenerate} aria-label="ساخت دوباره بایو"><RefreshCw data-icon="inline-start" /><span className="hidden sm:inline">ساخت دوباره</span></Button>
+      </footer>}
+    </section>
   );
 }
