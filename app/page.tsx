@@ -30,7 +30,6 @@ export default function BioGenerator() {
   const [generatedBio, setGeneratedBio] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [charCount, setCharCount] = useState(0);
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
   const [isCooldown, setIsCooldown] = useState(false);
@@ -40,10 +39,6 @@ export default function BioGenerator() {
       outputRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
-
-  useEffect(() => {
-    setCharCount(aboutYou.length);
-  }, [aboutYou]);
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
@@ -57,6 +52,13 @@ export default function BioGenerator() {
     return () => clearInterval(interval);
   }, [isCooldown, cooldownTimer]);
 
+  useEffect(() => {
+    if (!copied) return;
+
+    const timeout = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timeout);
+  }, [copied]);
+
   const getCurrentPlatform = () => {
     return (
       platforms.find((p) => p.value === platform) || {
@@ -67,14 +69,17 @@ export default function BioGenerator() {
 
   const getCharLimitPercent = () => {
     const currentLimit = getCurrentPlatform().limit;
-    return (charCount / currentLimit) * 100;
+    return (aboutYou.length / currentLimit) * 100;
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generatedBio);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-    sonnar("بایو کپی شد", { icon: "✂️" });
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(generatedBio);
+      setCopied(true);
+      sonnar("بایو کپی شد", { icon: "✂️" });
+    } catch {
+      sonnar.error("کپی کردن بایو ممکن نشد.");
+    }
   };
 
   const generateBio = async () => {
@@ -202,6 +207,7 @@ export default function BioGenerator() {
                   </div>
                   {platform && (
                     <span
+                      aria-live="polite"
                       className={`text-xs font-medium px-2 py-0.5 rounded-full ${
                         getCharLimitPercent() > 90
                           ? "bg-destructive/10 text-destructive"
@@ -210,25 +216,30 @@ export default function BioGenerator() {
                           : "bg-emerald-500/10 text-emerald-600"
                       }`}
                     >
-                      {charCount} / {getCurrentPlatform().limit}
+                      {aboutYou.length} / {getCurrentPlatform().limit}
                     </span>
                   )}
                 </div>
+                <label htmlFor="about-you" className="sr-only">
+                  درباره خودت یا پیجت
+                </label>
                 <textarea
+                  id="about-you"
+                  aria-describedby="about-you-help"
                   placeholder="ویژگی یا هرچیزی در مورد خودت یا پیجت بگو..."
                   className="w-full min-h-[90px] sm:min-h-[120px] resize-none rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-sm bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary/40 transition-all duration-200"
                   value={aboutYou}
                   onChange={(e) => setAboutYou(e.target.value)}
                   maxLength={platform ? getCurrentPlatform().limit : 150}
                 />
-                <p className="text-xs text-muted-foreground mt-2">
+                <p id="about-you-help" className="text-xs text-muted-foreground mt-2">
                   هرچه جزئیات بیشتری بنویسی، بایوی بهتری دریافت می‌کنی
                 </p>
               </section>
 
               {/* Error */}
               {error && (
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-destructive/5 border border-destructive/15">
+                <div role="alert" className="flex items-start gap-2 p-3 rounded-xl bg-destructive/5 border border-destructive/15">
                   <AlertCircle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
                   <p className="text-destructive text-sm">{error}</p>
                 </div>
@@ -236,7 +247,7 @@ export default function BioGenerator() {
 
               {/* Note */}
               {note && (
-                <div className="flex items-start gap-2 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
+                <div role="status" className="flex items-start gap-2 p-3 rounded-xl bg-amber-500/5 border border-amber-500/15">
                   <Info className="h-4 w-4 text-amber-600 mt-0.5 shrink-0" />
                   <p className="text-amber-700 text-sm">{note}</p>
                 </div>
@@ -268,7 +279,7 @@ export default function BioGenerator() {
           </div>
 
           {/* Right panel: Output */}
-          <div ref={outputRef} className="glass-surface rounded-2xl p-4 sm:p-6 lg:p-8">
+          <div ref={outputRef} aria-live="polite" aria-busy={isGenerating} className="glass-surface rounded-2xl p-4 sm:p-6 lg:p-8">
             <OutputPanel
               generatedBio={generatedBio}
               platform={platform}

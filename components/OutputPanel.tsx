@@ -72,6 +72,7 @@ export default function OutputPanel({
               {error}
             </p>
             <button
+              type="button"
               onClick={onRegenerate}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-medium bg-primary text-primary-foreground hover:opacity-90 transition-all duration-200"
             >
@@ -146,6 +147,7 @@ export default function OutputPanel({
         {generatedBio && !isGenerating && !error && (
           <div className="flex gap-3 pt-2 animate-in fade-in slide-in-from-bottom-1 duration-300 delay-200">
             <button
+              type="button"
               onClick={onCopy}
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium",
@@ -168,6 +170,7 @@ export default function OutputPanel({
               )}
             </button>
             <button
+              type="button"
               onClick={onRegenerate}
               className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium border border-border bg-card text-foreground hover:bg-accent transition-all duration-200"
             >
