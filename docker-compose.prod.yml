@@ -6,14 +6,24 @@ services:
     build:
       context: .
       dockerfile: prod.Dockerfile
-      args:
-        ENV_VARIABLE: ${ENV_VARIABLE}
-        NEXT_PUBLIC_ENV_VARIABLE: ${NEXT_PUBLIC_ENV_VARIABLE}
     restart: always
     ports:
       - 3000:3000
+    environment:
+      NODE_ENV: production
+      NEXT_OPENAI_API_KEY: ${NEXT_OPENAI_API_KEY}
+      NEXT_LLM_MODEL: ${NEXT_LLM_MODEL:-gpt-4o}
+      REDIS_URL: ${REDIS_URL}
+      REDIS_TOKEN: ${REDIS_TOKEN}
+      RATE_LIMIT_WINDOW: ${RATE_LIMIT_WINDOW:-60000}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-10}
     networks:
       - biogpt_network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
 
   # Add more containers below (nginx, postgres, etc.)
 
@@ -21,4 +31,4 @@ services:
 # with each other, by using their container name as a hostname
 networks:
   biogpt_network:
-    external: true
+    driver: bridge

@@ -1,22 +1,17 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
-RUN mkdir -p /app
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN corepack enable
 
 WORKDIR /app
 
-COPY package.json /app
-
-RUN npm install -g next
-
-RUN npm install
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 COPY . /app
 
-RUN mkdir -p /app/.next/cache/images
-VOLUME /app/.next/cache/images
-
-RUN npm run build
-
 EXPOSE 3000
 
-CMD npm run start
+CMD ["pnpm", "dev"]
