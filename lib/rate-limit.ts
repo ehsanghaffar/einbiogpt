@@ -3,8 +3,14 @@ import { getUserIp } from "./get-ip";
 
 const REDIS_URL = process.env.REDIS_URL;
 const REDIS_TOKEN = process.env.REDIS_TOKEN;
-const RATE_LIMIT_WINDOW = parseInt(process.env.RATE_LIMIT_WINDOW || "60000", 10);
-const RATE_LIMIT_MAX = parseInt(process.env.RATE_LIMIT_MAX || "10", 10);
+const configuredWindow = Number(process.env.RATE_LIMIT_WINDOW || 60000);
+const configuredMax = Number(process.env.RATE_LIMIT_MAX || 10);
+const RATE_LIMIT_WINDOW = Number.isFinite(configuredWindow) && configuredWindow > 0
+  ? configuredWindow
+  : 60000;
+const RATE_LIMIT_MAX = Number.isFinite(configuredMax) && configuredMax > 0
+  ? Math.floor(configuredMax)
+  : 10;
 
 let redis: Redis | null = null;
 let useRedis = false;
@@ -51,6 +57,13 @@ export class RateLimitError extends Error {
   }
 }
 
+export class RateLimitUnavailableError extends Error {
+  constructor() {
+    super("Rate limiting service unavailable");
+    this.name = "RateLimitUnavailableError";
+  }
+}
+
 export async function checkRateLimit(key: string): Promise<boolean> {
   if (useRedis && redis) {
     return checkRedisRateLimit(key);
@@ -59,27 +72,21 @@ export async function checkRateLimit(key: string): Promise<boolean> {
 }
 
 async function checkRedisRateLimit(key: string): Promise<boolean> {
-  if (!redis) return false;
+  if (!redis) throw new RateLimitUnavailableError();
 
   const redisKey = `ratelimit:${key}`;
 
   try {
-    const current = await redis.get<number>(redisKey);
+    const current = await redis.incr(redisKey);
 
-    if (!current) {
-      await redis.setex(redisKey, Math.ceil(RATE_LIMIT_WINDOW / 1000), 1);
-      return true;
+    if (current === 1) {
+      await redis.expire(redisKey, Math.ceil(RATE_LIMIT_WINDOW / 1000));
     }
 
-    if (current >= RATE_LIMIT_MAX) {
-      return false;
-    }
-
-    await redis.incr(redisKey);
-    return true;
+    return current <= RATE_LIMIT_MAX;
   } catch (error) {
     console.error("Redis rate limit error:", error);
-    return checkMemoryRateLimit(key);
+    throw new RateLimitUnavailableError();
   }
 }
 
