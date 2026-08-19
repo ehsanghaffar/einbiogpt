@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server"
-import { rateLimitByIp, RateLimitError } from "@/lib/rate-limit";
+import {
+  rateLimitByIp,
+  RateLimitError,
+  RateLimitUnavailableError,
+} from "@/lib/rate-limit";
 import { generateBioWithLLM, SupportedModel } from "@/lib/llm-provider";
+import {
+  generateBioRequestSchema,
+  MAX_ABOUT_YOU_LENGTH,
+  normalizeGeneratedBio,
+} from "@/lib/generation";
 
 const LLM_MODEL = (process.env.NEXT_LLM_MODEL || "gpt-4o") as SupportedModel
-
-/** Allowed platform values – prevents injection via platform field */
-const ALLOWED_PLATFORMS = ["instagram", "twitter", "linkedin", "tiktok", "telegram", "youtube"] as const;
-/** Allowed tone values – prevents injection via tone field */
-const ALLOWED_TONES = ["professional", "friendly", "creative", "humorous"] as const;
-
-const MAX_ABOUT_YOU_LENGTH = 2000;
 
 /**
  * Sanitizes user-provided text: truncates length, strips control chars, normalizes whitespace.
@@ -51,8 +53,6 @@ const BIO_PROMPT_TEMPLATE = `تو یک متخصص نویسنده بیوگراف�
 - twitter: کوتاه و موجز، مناسب برای اظهارنظر
 - linkedin: حرفه‌ای و تجاری
 - telegram: ارتباطی و اطلاع‌رسانی
-- tiktok: سرگرمی و خلاقیت
-- youtube: محتوای ویدیویی و کانال
 
 قوانین خروجی:
 - محدودیت کاراکتر پلتفرم را رعایت کن و بیوگرافی را به زبان فارسی بنویس.
@@ -60,29 +60,22 @@ const BIO_PROMPT_TEMPLATE = `تو یک متخصص نویسنده بیوگراف�
 - این کلمات را در بیوگرافی استفاده نکن: احسان، عین، عین الله، غفار.`;
 
 export async function POST(request: Request) {
+  let body: unknown;
+
   try {
+    body = await request.json();
+    const parsed = generateBioRequestSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: "لطفاً اطلاعات ورودی را به‌درستی تکمیل کنید." },
+        { status: 400 },
+      );
+    }
+
     await rateLimitByIp(request);
 
-    const body = await request.json();
-    const rawAbout = body?.aboutYou;
-    const platform = typeof body?.platform === "string" ? body.platform.toLowerCase().trim() : "";
-    const tone = typeof body?.tone === "string" ? body.tone.toLowerCase().trim() : "";
-
-    if (!rawAbout || !platform || !tone) {
-      return NextResponse.json({ error: "لطفاً تمام فیلدهای مورد نیاز را پر کنید." }, { status: 400 });
-    }
-
-    if (!ALLOWED_PLATFORMS.includes(platform as (typeof ALLOWED_PLATFORMS)[number])) {
-      return NextResponse.json({ error: "پلتفرم انتخاب‌شده معتبر نیست." }, { status: 400 });
-    }
-    if (!ALLOWED_TONES.includes(tone as (typeof ALLOWED_TONES)[number])) {
-      return NextResponse.json({ error: "لحن انتخاب‌شده معتبر نیست." }, { status: 400 });
-    }
-
-    const aboutYou = sanitizeUserInput(rawAbout);
-    if (!aboutYou) {
-      return NextResponse.json({ error: "محتوای «درباره من» معتبر نیست یا خالی است." }, { status: 400 });
-    }
+    const { aboutYou, platform, tone } = parsed.data;
 
     const result = await generateBioWithLLM(LLM_MODEL, BIO_PROMPT_TEMPLATE, {
       aboutYou,
@@ -90,35 +83,38 @@ export async function POST(request: Request) {
       tone,
     })
 
-    console.log("Generated bio:", result);
+    const generatedBio = normalizeGeneratedBio(result.text, platform);
 
-    // Extract the generated bio from the result
-    const generatedBio = result.text
-
-    // Return the generated bio
-    return NextResponse.json({
-      bio: generatedBio,
-      model: LLM_MODEL,
-    })
+    return NextResponse.json(
+      { bio: generatedBio, model: LLM_MODEL },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
-    console.error("Error in generate-bio API:", error)
+    console.error("Error in generate-bio API:", error instanceof Error ? error.name : "unknown");
 
     if (error instanceof RateLimitError) {
       return NextResponse.json(
         { error: error.message },
-        { status: 429 }
+        { status: 429, headers: { "Cache-Control": "no-store" } },
+      )
+    }
+
+    if (error instanceof RateLimitUnavailableError) {
+      return NextResponse.json(
+        { error: "سرویس محدودسازی درخواست موقتاً در دسترس نیست. لطفاً بعداً دوباره تلاش کنید." },
+        { status: 503, headers: { "Cache-Control": "no-store" } },
       )
     }
 
     try {
-      const body = await request.json()
-      const fallbackBio = generateFallbackBio(body.aboutYou, body.platform, body.tone)
+      const parsed = generateBioRequestSchema.parse(body);
+      const fallbackBio = generateFallbackBio(parsed.aboutYou, parsed.platform, parsed.tone);
       return NextResponse.json(
         {
-          bio: fallbackBio,
+          bio: normalizeGeneratedBio(fallbackBio, parsed.platform),
           note: "تولید شده با سیستم پشتیبان به دلیل مشکل در ارتباط با هوش مصنوعی",
         },
-        { status: 200 }
+        { status: 200, headers: { "Cache-Control": "no-store" } },
       )
     } catch (fallbackError) {
       return NextResponse.json(
