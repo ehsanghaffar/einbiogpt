@@ -15,6 +15,7 @@ export default function Header() {
         </span>
       </Link>
       <div className="flex items-center gap-2">
+        <Link href="/bio" className="hidden rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground transition-colors hover:bg-accent hover:text-foreground sm:inline-flex">ساخت بایو</Link>
         <ThemeToggle />
         <a href="https://github.com/ehsanghaffar/einbiogpt" target="_blank" rel="noreferrer" className="flex size-10 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground" aria-label="مشاهده پروژه در گیت‌هاب">
           <Github className="size-5" aria-hidden="true" />

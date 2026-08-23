@@ -21,7 +21,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Ein Bio — ساخت بایو هوشمند با هوش مصنوعی",
+    default: "Ein Bio — شوکیس بایوهای هوشمند",
     template: "%s | Ein Bio",
   },
   description:
