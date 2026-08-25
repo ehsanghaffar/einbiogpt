@@ -92,7 +92,7 @@ BioGPT یک برنامه وب هوشمند است که کاربران را در 
 | لایه | تکنولوژی | نسخه | هدف |
 |------|-----------|------|------|
 | **چارچوب LLM** | [LangChain](https://www.langchain.com/) | 0.2.2 | ترکیب‌بندی و مدیریت LLM |
-| **ارائه‌دهندگان LLM** | OpenAI، AIHUBMIX | آخرین | پشتیبانی از چندین ارائه‌دهنده |
+| **ارائه‌دهندگان LLM** | OpenAI، OpenRouter | آخرین | پشتیبانی از چندین ارائه‌دهنده |
 | **OpenAI** | [OpenAI SDK](https://openai.com/) | 3.2.1 | مدل‌های GPT (gpt-4o، gpt-5) |
 
 ### ذخیره‌سازی و زیرساخت
@@ -206,10 +206,6 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
 OPENROUTER_HTTP_REFERER=https://your-site.example
 OPENROUTER_APP_NAME=BioGPT
-
-# تنظیمات AIHUBMIX (برای مدل‌های رایگان)
-AIHUBMIX_API_KEY=your_aihubmix_key_here
-AIHUBMIX_API_BASE_URL=https://aihubmix.com/v1
 
 # محدودیت نرخ
 REDIS_URL=https://your-redis-url.upstash.io

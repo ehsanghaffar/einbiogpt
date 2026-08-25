@@ -6,11 +6,9 @@ import { OpenRouterProvider } from "@/lib/openrouter-provider";
 export type SupportedModel =
   | "gpt-4o"
   | "gpt-5"
-  | "glm-4.7-flash-free"
-  | "gemini-2.0-flash-free"
   | string;
 
-export type ModelProvider = "openai" | "aihubmix" | "openrouter";
+export type ModelProvider = "openai" | "openrouter";
 
 interface LLMResponse {
   text: string;
@@ -21,7 +19,7 @@ interface LLMResponse {
  */
 export function getModelProvider(model: SupportedModel): ModelProvider {
   const forcedProvider = (process.env.NEXT_LLM_PROVIDER || "").toLowerCase();
-  if (forcedProvider === "openai" || forcedProvider === "openrouter" || forcedProvider === "aihubmix") {
+  if (forcedProvider === "openai" || forcedProvider === "openrouter") {
     return forcedProvider as ModelProvider;
   }
 
@@ -33,7 +31,7 @@ export function getModelProvider(model: SupportedModel): ModelProvider {
     return "openrouter";
   }
 
-  return "aihubmix";
+  return "openrouter";
 }
 
 /**
@@ -60,55 +58,6 @@ function createOpenAIChain(
     llm: chatOpenAI,
     prompt: promptTemplate as any, // Type assertion to bypass type issuesp
   });
-}
-
-/**
- * Calls AIHUBMIX API for non-OpenAI models using fetch
- */
-async function callAIHubMixAPI(
-  model: string,
-  apiKey: string,
-  template: string,
-  inputVariables: Record<string, string>
-): Promise<string> {
-  const apiBaseUrl = process.env.AIHUBMIX_API_BASE_URL || "https://aihubmix.com/v1";
-
-  let messageContent = renderTemplate(template, inputVariables);
-
-  const response = await fetch(`${apiBaseUrl}/chat/completions`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model,
-      messages: [
-        {
-          role: "user",
-          content: messageContent,
-        },
-      ],
-      temperature: 0.7,
-    }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json();
-    throw new Error(
-      `AIHUBMIX API Error: ${response.status} - ${
-        errorData.error?.message || "Unknown error"
-      }`
-    );
-  }
-
-  const data = await response.json();
-
-  if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-    throw new Error("Invalid response format from AIHUBMIX API");
-  }
-
-  return data.choices[0].message.content;
 }
 
 function renderTemplate(template: string, inputVariables: Record<string, string>) {
@@ -191,15 +140,7 @@ export async function generateBioWithLLM(
     };
   }
 
-  const apiKey = process.env.AIHUBMIX_API_KEY;
-  if (!apiKey) {
-    throw new Error("AIHUBMIX_API_KEY environment variable is not set");
-  }
-
-  const text = await callAIHubMixAPI(model, apiKey, prompt, inputVariables);
-  return {
-    text: text.trim(),
-  };
+  throw new Error(`Unsupported provider: ${provider}`);
 }
 
 /**
@@ -208,6 +149,4 @@ export async function generateBioWithLLM(
 export const SUPPORTED_MODELS = {
   "gpt-4o": { label: "GPT-4o (OpenAI)", provider: "openai" },
   "gpt-5": { label: "GPT-5 (OpenAI)", provider: "openai" },
-  "glm-4.7-flash-free": { label: "GLM-4.7-Flash (Free)", provider: "aihubmix" },
-  "gemini-2.0-flash-free": { label: "Gemini 2.0 Flash (Free)", provider: "aihubmix" },
 } as const;

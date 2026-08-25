@@ -46,7 +46,7 @@ BioGPT is a modern full-stack web application built with Next.js that generates 
 │  ├── LangChain Chains                                            │
 │  ├── LLM Provider Selection                                      │
 │  │   ├── OpenAI (gpt-4o, gpt-5)                                  │
-│  │   └── AIHUBMIX (free models)                                  │
+  │   └── OpenRouter (free/community models)                       │
 │  └── OpenAI Stream Handler                                       │
 │                                                                   │
 │  Response Handling:                                              │
@@ -60,7 +60,7 @@ BioGPT is a modern full-stack web application built with Next.js that generates 
 │                    External Services                             │
 ├─────────────────────────────────────────────────────────────────┤
 │  ├── OpenAI API (LLM)                                             │
-│  ├── AIHUBMIX API (LLM)                                           │
+│  ├── OpenRouter API (LLM)                                         │
 │  ├── Upstash Redis (Rate limiting)                               │
 │  └── Vercel Analytics (Monitoring)                               │
 └─────────────────────────────────────────────────────────────────┘
@@ -163,7 +163,7 @@ Server: IP extraction and rate limit check (Redis)
     ↓
 Input validation (Zod schemas)
     ↓
-LLM Provider selection (OpenAI or AIHUBMIX)
+LLM Provider selection (OpenAI or OpenRouter)
     ↓
 LangChain chain execution
     ↓
@@ -236,7 +236,7 @@ Client: Append response to chat history
 
 ### 3. Multiple LLM Provider Support
 
-**Decision**: Support multiple LLM providers (OpenAI, AIHUBMIX)
+**Decision**: Support multiple LLM providers (OpenAI, OpenRouter)
 
 **Why**:
 - Cost optimization (free models vs. premium)
@@ -251,7 +251,7 @@ NEXT_LLM_MODEL selection
     ↓
 llm-provider.ts (Router)
     ├─ gpt-4o/gpt-5 → OpenAI SDK
-    └─ Free models → AIHUBMIX API
+    └─ Community models → OpenRouter API
     ↓
 LangChain Chain
 ```

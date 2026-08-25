@@ -47,8 +47,8 @@ git --version
    - Create an API key
    - Add billing information and credits
 
-2. **AIHUBMIX Account** (Optional, for free models)
-   - Sign up at https://aihubmix.com
+2. **OpenRouter Account** (Optional, for free/community models)
+   - Sign up at https://openrouter.ai
    - Get API key for free models
 
 3. **Upstash Account** (For production rate limiting)
@@ -154,25 +154,6 @@ OPENROUTER_HTTP_REFERER=https://your-site.example
 OPENROUTER_APP_NAME=BioGPT
 ```
 
-### Option 3: Using Free Models (AIHUBMIX)
-
-**Best for**: Testing, learning, cost-free
-
-#### 1. Get AIHUBMIX API Key
-
-1. Go to https://aihubmix.com
-2. Sign up or log in
-3. Create an API key
-4. Copy your API key
-
-#### 2. Configure `.env.local`
-
-```bash
-NEXT_LLM_MODEL=glm-4.7-flash-free
-AIHUBMIX_API_KEY=your_aihubmix_key_here
-AIHUBMIX_API_BASE_URL=https://aihubmix.com/v1
-```
-
 ### Complete `.env.local` Example
 
 ```bash
@@ -180,7 +161,7 @@ AIHUBMIX_API_BASE_URL=https://aihubmix.com/v1
 # LLM Model Selection
 # ============================================
 # Options: gpt-4o, gpt-5 (OpenAI)
-#          glm-4.7-flash-free, gemini-2.0-flash-free, mimo-v2-flash-free (free)
+#          Any OpenRouter model slug (free/community models)
 NEXT_LLM_MODEL=gpt-4o
 
 # ============================================
@@ -196,12 +177,6 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
 OPENROUTER_HTTP_REFERER=https://your-site.example
 OPENROUTER_APP_NAME=BioGPT
-
-# ============================================
-# AIHUBMIX Configuration (if using free models)
-# ============================================
-AIHUBMIX_API_KEY=your_aihubmix_key_here
-AIHUBMIX_API_BASE_URL=https://aihubmix.com/v1
 
 # ============================================
 # Rate Limiting (Optional)
@@ -381,7 +356,7 @@ docker-compose -f docker-compose.prod.yml up -d
    - In Vercel dashboard, go to Settings → Environment Variables
    - Add all required variables:
      - `NEXT_LLM_MODEL`
-     - `NEXT_OPENAI_API_KEY` (or AIHUBMIX keys)
+     - `NEXT_OPENAI_API_KEY` (or OpenRouter keys)
      - `REDIS_URL` (optional)
      - `REDIS_TOKEN` (optional)
 

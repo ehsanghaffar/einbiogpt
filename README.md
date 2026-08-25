@@ -94,7 +94,7 @@ BioGPT is an intelligent web application that helps users create compelling soci
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
 | **LLM Framework** | [LangChain](https://www.langchain.com/) | 0.2.2 | LLM orchestration and chain management |
-| **LLM Providers** | OpenAI, AIHUBMIX, OpenRouter | Latest | Multiple LLM providers support |
+| **LLM Providers** | OpenAI, OpenRouter | Latest | Multiple LLM providers support |
 | **OpenAI** | [OpenAI SDK](https://openai.com/) | 3.2.1 | GPT models (gpt-4o, gpt-5) |
 | **OpenRouter** | [@openrouter/sdk](https://www.npmjs.com/package/@openrouter/sdk) | ^0.2.0 | OpenRouter models and streaming completion |
 | **LangChain OpenAI** | [@langchain/openai](https://www.npmjs.com/package/@langchain/openai) | 0.0.33 | OpenAI integration for LangChain |
@@ -103,7 +103,6 @@ BioGPT is an intelligent web application that helps users create compelling soci
 
 **Supported LLM Models:**
 - **OpenAI**: gpt-4o, gpt-5
-- **AIHUBMIX Free Models**: glm-4.7-flash-free, gemini-2.0-flash-free, mimo-v2-flash-free
 - **OpenRouter**: any OpenRouter model slug, e.g. meta-llama/llama-3.3-70b-instruct:free, nousresearch/hermes-3-llama-3.1-405b:free
 
 ### Data & Infrastructure
@@ -310,8 +309,8 @@ Create a `.env.local` file in the project root with the following variables:
 #### LLM Model Selection
 
 ```bash
-# Choose one of: gpt-4o, gpt-5, glm-4.7-flash-free, gemini-2.0-flash-free, mimo-v2-flash-free
-# or any AIHUBMIX model (default: mimo-v2-flash-free)
+# Choose one of: gpt-4o, gpt-5
+# or any OpenRouter model slug (default: meta-llama/llama-3.3-70b-instruct:free)
 NEXT_LLM_MODEL=gpt-4o
 ```
 
@@ -333,15 +332,6 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
 OPENROUTER_HTTP_REFERER=https://your-site.example
 OPENROUTER_APP_NAME=BioGPT
-```
-
-#### AIHUBMIX Configuration (for free models)
-
-```bash
-# Required for: glm-4.7-flash-free, gemini-2.0-flash-free, mimo-v2-flash-free
-# Get from: https://aihubmix.com
-AIHUBMIX_API_KEY=your_aihubmix_key_here
-AIHUBMIX_API_BASE_URL=https://aihubmix.com/v1
 ```
 
 #### Rate Limiting Configuration
@@ -371,10 +361,10 @@ NEXT_PUBLIC_COOLDOWN_TIME=10
    NEXT_OPENAI_API_KEY=sk_...
    ```
 
-2. **Using free models** (requires AIHUBMIX key):
+2. **Using OpenRouter models** (requires OpenRouter key):
    ```bash
-   NEXT_LLM_MODEL=glm-4.7-flash-free
-   AIHUBMIX_API_KEY=...
+   NEXT_LLM_MODEL=meta-llama/llama-3.3-70b-instruct:free
+   OPENROUTER_API_KEY=...
    ```
 
 For detailed setup instructions, see `docs/ENV_VARIABLES.md`

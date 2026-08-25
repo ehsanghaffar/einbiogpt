@@ -184,7 +184,7 @@ Documentation
 ### LLM Integration
 Multiple LLM providers supported:
 - **OpenAI** (gpt-4o, gpt-5) - Best quality, requires payment
-- **AIHUBMIX** (free models) - Free, good for testing
+- **OpenRouter** (free/community models) - Free, good for testing
 
 See [SETUP_GUIDE.md](./SETUP_GUIDE.md#environment-configuration) for setup.
 
@@ -205,7 +205,7 @@ See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md#streaming-responses) for examp
 ### Architecture Highlights
 - **Client**: React with TypeScript, Tailwind CSS
 - **Server**: Next.js App Router with streaming
-- **AI**: LangChain + OpenAI/AIHUBMIX
+- **AI**: LangChain + OpenAI/OpenRouter
 - **Caching**: Redis for rate limiting
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for full details.
