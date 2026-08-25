@@ -51,7 +51,11 @@ git --version
    - Sign up at https://openrouter.ai
    - Get API key for free models
 
-3. **Upstash Account** (For production rate limiting)
+3. **Google AI Studio Account** (Optional, for Gemini models)
+   - Sign up at https://aistudio.google.com
+   - Get API key from https://aistudio.google.com/apikey
+
+4. **Upstash Account** (For production rate limiting)
    - Sign up at https://upstash.com
    - Create a Redis database
    - Get REST URL and token
@@ -161,6 +165,7 @@ OPENROUTER_APP_NAME=BioGPT
 # LLM Model Selection
 # ============================================
 # Options: gpt-4o, gpt-5 (OpenAI)
+#          gemini-2.0-flash, gemini-2.5-flash, gemini-3.7-flash (Google)
 #          Any OpenRouter model slug (free/community models)
 NEXT_LLM_MODEL=gpt-4o
 
@@ -177,6 +182,13 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
 OPENROUTER_HTTP_REFERER=https://your-site.example
 OPENROUTER_APP_NAME=BioGPT
+
+# ============================================
+# Gemini Configuration (if using Gemini models)
+# ============================================
+GEMINI_API_KEY=your_gemini_key_here
+# GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+# GEMINI_DEFAULT_MODEL=gemini-2.0-flash
 
 # ============================================
 # Rate Limiting (Optional)

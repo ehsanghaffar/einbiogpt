@@ -46,6 +46,7 @@ BioGPT is a modern full-stack web application built with Next.js that generates 
 │  ├── LangChain Chains                                            │
 │  ├── LLM Provider Selection                                      │
 │  │   ├── OpenAI (gpt-4o, gpt-5)                                  │
+  │   ├── Gemini (gemini-2.0-flash, gemini-2.5-flash, etc.)       │
   │   └── OpenRouter (free/community models)                       │
 │  └── OpenAI Stream Handler                                       │
 │                                                                   │
@@ -60,6 +61,7 @@ BioGPT is a modern full-stack web application built with Next.js that generates 
 │                    External Services                             │
 ├─────────────────────────────────────────────────────────────────┤
 │  ├── OpenAI API (LLM)                                             │
+│  ├── Google Gemini API (LLM)                                      │
 │  ├── OpenRouter API (LLM)                                         │
 │  ├── Upstash Redis (Rate limiting)                               │
 │  └── Vercel Analytics (Monitoring)                               │
@@ -163,7 +165,7 @@ Server: IP extraction and rate limit check (Redis)
     ↓
 Input validation (Zod schemas)
     ↓
-LLM Provider selection (OpenAI or OpenRouter)
+LLM Provider selection (OpenAI, Gemini, or OpenRouter)
     ↓
 LangChain chain execution
     ↓
@@ -236,7 +238,7 @@ Client: Append response to chat history
 
 ### 3. Multiple LLM Provider Support
 
-**Decision**: Support multiple LLM providers (OpenAI, OpenRouter)
+**Decision**: Support multiple LLM providers (OpenAI, Gemini, OpenRouter)
 
 **Why**:
 - Cost optimization (free models vs. premium)
@@ -251,6 +253,7 @@ NEXT_LLM_MODEL selection
     ↓
 llm-provider.ts (Router)
     ├─ gpt-4o/gpt-5 → OpenAI SDK
+    ├─ gemini-* → Google Gemini REST API
     └─ Community models → OpenRouter API
     ↓
 LangChain Chain

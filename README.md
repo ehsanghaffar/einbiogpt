@@ -94,7 +94,7 @@ BioGPT is an intelligent web application that helps users create compelling soci
 | Layer | Technology | Version | Purpose |
 |-------|-----------|---------|---------|
 | **LLM Framework** | [LangChain](https://www.langchain.com/) | 0.2.2 | LLM orchestration and chain management |
-| **LLM Providers** | OpenAI, OpenRouter | Latest | Multiple LLM providers support |
+| **LLM Providers** | OpenAI, OpenRouter, Gemini | Latest | Multiple LLM providers support |
 | **OpenAI** | [OpenAI SDK](https://openai.com/) | 3.2.1 | GPT models (gpt-4o, gpt-5) |
 | **OpenRouter** | [@openrouter/sdk](https://www.npmjs.com/package/@openrouter/sdk) | ^0.2.0 | OpenRouter models and streaming completion |
 | **LangChain OpenAI** | [@langchain/openai](https://www.npmjs.com/package/@langchain/openai) | 0.0.33 | OpenAI integration for LangChain |
@@ -103,6 +103,7 @@ BioGPT is an intelligent web application that helps users create compelling soci
 
 **Supported LLM Models:**
 - **OpenAI**: gpt-4o, gpt-5
+- **Gemini**: gemini-2.0-flash, gemini-2.5-flash, gemini-3.7-flash
 - **OpenRouter**: any OpenRouter model slug, e.g. meta-llama/llama-3.3-70b-instruct:free, nousresearch/hermes-3-llama-3.1-405b:free
 
 ### Data & Infrastructure
@@ -309,7 +310,7 @@ Create a `.env.local` file in the project root with the following variables:
 #### LLM Model Selection
 
 ```bash
-# Choose one of: gpt-4o, gpt-5
+# Choose one of: gpt-4o, gpt-5, gemini-2.0-flash, gemini-2.5-flash, gemini-3.7-flash
 # or any OpenRouter model slug (default: meta-llama/llama-3.3-70b-instruct:free)
 NEXT_LLM_MODEL=gpt-4o
 ```
@@ -332,6 +333,16 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_DEFAULT_MODEL=meta-llama/llama-3.3-70b-instruct:free
 OPENROUTER_HTTP_REFERER=https://your-site.example
 OPENROUTER_APP_NAME=BioGPT
+```
+
+#### Gemini Configuration
+
+```bash
+# Required only if using Gemini models
+# Get from: https://aistudio.google.com/apikey
+GEMINI_API_KEY=your_gemini_key_here
+GEMINI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta
+GEMINI_DEFAULT_MODEL=gemini-2.0-flash
 ```
 
 #### Rate Limiting Configuration
@@ -365,6 +376,12 @@ NEXT_PUBLIC_COOLDOWN_TIME=10
    ```bash
    NEXT_LLM_MODEL=meta-llama/llama-3.3-70b-instruct:free
    OPENROUTER_API_KEY=...
+   ```
+
+3. **Using Gemini models** (requires Google AI Studio key):
+   ```bash
+   NEXT_LLM_MODEL=gemini-2.0-flash
+   GEMINI_API_KEY=...
    ```
 
 For detailed setup instructions, see `docs/ENV_VARIABLES.md`

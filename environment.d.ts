@@ -9,5 +9,8 @@ declare namespace NodeJS {
     readonly OPENROUTER_DEFAULT_MODEL: string
     readonly OPENROUTER_HTTP_REFERER: string
     readonly OPENROUTER_APP_NAME: string
+    readonly GEMINI_API_KEY: string
+    readonly GEMINI_API_BASE_URL: string
+    readonly GEMINI_DEFAULT_MODEL: string
   }
 }

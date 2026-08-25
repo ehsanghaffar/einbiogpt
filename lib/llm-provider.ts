@@ -2,13 +2,14 @@ import { LLMChain } from "langchain/chains";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { OpenRouterProvider } from "@/lib/openrouter-provider";
+import { GeminiProvider } from "@/lib/gemini-provider";
 
 export type SupportedModel =
   | "gpt-4o"
   | "gpt-5"
   | string;
 
-export type ModelProvider = "openai" | "openrouter";
+export type ModelProvider = "openai" | "openrouter" | "gemini";
 
 interface LLMResponse {
   text: string;
@@ -19,12 +20,16 @@ interface LLMResponse {
  */
 export function getModelProvider(model: SupportedModel): ModelProvider {
   const forcedProvider = (process.env.NEXT_LLM_PROVIDER || "").toLowerCase();
-  if (forcedProvider === "openai" || forcedProvider === "openrouter") {
+  if (forcedProvider === "openai" || forcedProvider === "openrouter" || forcedProvider === "gemini") {
     return forcedProvider as ModelProvider;
   }
 
   if (model === "gpt-4o" || model === "gpt-5") {
     return "openai";
+  }
+
+  if (typeof model === "string" && model.startsWith("gemini")) {
+    return "gemini";
   }
 
   if (typeof model === "string" && (model.includes("/") || model.startsWith("~") || model.includes(":"))) {
@@ -129,10 +134,39 @@ export async function generateBioWithLLM(
           content: messageContent,
         },
       ],
-      temperature: 0.7,
+      // temperature: 0.7,
       topP: 1,
       maxTokens: 1024,
       stream: false,
+    });
+
+    return {
+      text: text.trim(),
+    };
+  }
+
+  if (provider === "gemini") {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      throw new Error("GEMINI_API_KEY environment variable is not set");
+    }
+
+    const gemini = new GeminiProvider({
+      apiKey,
+      baseUrl: process.env.GEMINI_API_BASE_URL,
+    });
+
+    const selectedModel = model.startsWith("gemini")
+      ? model
+      : process.env.GEMINI_DEFAULT_MODEL || "gemini-2.0-flash";
+
+    const messageContent = renderTemplate(prompt, inputVariables);
+    const text = await gemini.createChatCompletion({
+      model: selectedModel,
+      input: messageContent,
+      temperature: 0.7,
+      topP: 1,
+      maxTokens: 1024,
     });
 
     return {
@@ -149,4 +183,7 @@ export async function generateBioWithLLM(
 export const SUPPORTED_MODELS = {
   "gpt-4o": { label: "GPT-4o (OpenAI)", provider: "openai" },
   "gpt-5": { label: "GPT-5 (OpenAI)", provider: "openai" },
+  "gemini-2.0-flash": { label: "Gemini 2.0 Flash (Google)", provider: "gemini" },
+  "gemini-2.5-flash": { label: "Gemini 2.5 Flash (Google)", provider: "gemini" },
+  "gemini-3.7-flash": { label: "Gemini 3.7 Flash (Google)", provider: "gemini" },
 } as const;

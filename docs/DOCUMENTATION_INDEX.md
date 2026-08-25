@@ -185,6 +185,7 @@ Documentation
 Multiple LLM providers supported:
 - **OpenAI** (gpt-4o, gpt-5) - Best quality, requires payment
 - **OpenRouter** (free/community models) - Free, good for testing
+- **Google Gemini** (gemini-2.0-flash, gemini-2.5-flash, gemini-3.7-flash) - Google's latest models
 
 See [SETUP_GUIDE.md](./SETUP_GUIDE.md#environment-configuration) for setup.
 
@@ -205,7 +206,7 @@ See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md#streaming-responses) for examp
 ### Architecture Highlights
 - **Client**: React with TypeScript, Tailwind CSS
 - **Server**: Next.js App Router with streaming
-- **AI**: LangChain + OpenAI/OpenRouter
+- **AI**: LangChain + OpenAI/Gemini/OpenRouter
 - **Caching**: Redis for rate limiting
 
 See [ARCHITECTURE.md](./ARCHITECTURE.md) for full details.
