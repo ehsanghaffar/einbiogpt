@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Check, Copy, RefreshCw, Sparkles, UserRound } from "lucide-react";
+import { AlertCircle, Check, Circle, Copy, RefreshCw, Sparkles, UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { platforms } from "./PlatformSelector";
@@ -28,10 +28,33 @@ export default function OutputPanel({ generatedBio, platform, tone, copied, isGe
 
       <div className="flex flex-1 flex-col pt-4">
         {isGenerating ? (
-          <div role="status" className="flex flex-1 flex-col gap-6">
-            <div><p className="text-sm font-semibold text-foreground">در حال پیدا کردن بهترین واژه‌ها...</p><p className="mt-1 text-xs text-muted-foreground">چند ثانیه با ما همراه باش.</p></div>
-            <div className="flex flex-col gap-3 rounded-xl bg-muted p-5">
-              <div className="h-3 w-4/5 animate-pulse rounded bg-border" /><div className="h-3 w-full animate-pulse rounded bg-border" /><div className="h-3 w-3/5 animate-pulse rounded bg-border" />
+          <div role="status" className="relative flex flex-1 flex-col justify-center gap-6 overflow-hidden">
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-1 overflow-hidden rounded-full bg-muted">
+              <div className="h-full w-1/3 rounded-full bg-primary motion-safe:animate-[loading-bar_1.8s_ease-in-out_infinite]" />
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="relative flex size-11 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Sparkles className="size-5 motion-safe:animate-pulse" aria-hidden="true" />
+                <span className="absolute inset-0 rounded-full border border-primary/30 motion-safe:animate-ping" />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-foreground">بهترین واژه‌ها را کنار هم می‌چینیم...</p>
+                <p className="mt-1 text-xs text-muted-foreground">چند ثانیه با ما همراه باش.</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-4 rounded-xl bg-muted p-5">
+              <div className="flex items-center gap-2">
+                <Check className="size-4 text-primary" aria-hidden="true" />
+                <div className="h-3 w-36 animate-pulse rounded bg-border" />
+              </div>
+              <div className="flex items-center gap-2">
+                <Circle className="size-3 fill-primary/20 text-primary/50" aria-hidden="true" />
+                <div className="h-3 w-4/5 animate-pulse rounded bg-border" />
+              </div>
+              <div className="flex items-center gap-2">
+                <Circle className="size-3 text-border" aria-hidden="true" />
+                <div className="h-3 w-3/5 animate-pulse rounded bg-border" />
+              </div>
             </div>
           </div>
         ) : error ? (

@@ -1,3 +1,2 @@
 allowBuilds:
-  '@vercel/speed-insights': true
   esbuild: true

@@ -73,6 +73,12 @@
   .surface-shadow { box-shadow: 0 18px 60px -32px hsl(222 28% 13% / 0.28); }
 }
 
+@keyframes loading-bar {
+  0% { transform: translateX(320%); }
+  50% { transform: translateX(120%); }
+  100% { transform: translateX(-320%); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     scroll-behavior: auto !important;
