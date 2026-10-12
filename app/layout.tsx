@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Metadata, Viewport } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
+import { LocaleProvider } from "@/components/providers/LocaleProvider";
 import { ThemeScript } from "./theme-script";
 
 const siteUrl = "https://bio.eindev.ir";
@@ -117,8 +118,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen antialiased">
         <ThemeProvider>
-          {children}
-          <Toaster />
+          <LocaleProvider>
+            {children}
+            <Toaster />
+          </LocaleProvider>
         </ThemeProvider>
         <Analytics />
       </body>

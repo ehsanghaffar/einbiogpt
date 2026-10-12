@@ -10,6 +10,8 @@ import ToneSelector from "@/components/ToneSelector";
 import OutputPanel from "@/components/OutputPanel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { formatCount, formatMessage, toBioLanguage } from "@/lib/i18n";
+import { useLocale } from "@/components/providers/LocaleProvider";
 
 const COOLDOWN_TIME = Number(process.env.NEXT_PUBLIC_COOLDOWN_TIME || 10);
 
@@ -26,6 +28,7 @@ function SectionTitle({ number, title, description }: { number: string; title: s
 }
 
 export default function BioGenerator() {
+  const { locale, messages } = useLocale();
   const outputRef = useRef<HTMLDivElement>(null);
   const [cooldownTimer, setCooldownTimer] = useState(0);
   const [aboutYou, setAboutYou] = useState("");
@@ -61,12 +64,12 @@ export default function BioGenerator() {
     await navigator.clipboard.writeText(generatedBio);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    toast.success("بایو در کلیپ‌بورد کپی شد");
+    toast.success(messages.bio.copied);
   };
 
   const generateBio = async () => {
     if (isCooldown) {
-      toast("چند لحظه صبر کن و دوباره تلاش کن");
+      toast(messages.bio.waitMessage);
       return;
     }
     setIsGenerating(true);
@@ -79,20 +82,29 @@ export default function BioGenerator() {
       const response = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ aboutYou, platform, tone, language: "persian" }),
+        body: JSON.stringify({ aboutYou, platform, tone, language: toBioLanguage(locale) }),
       });
-      if (!response.ok) throw new Error(`خطا در ارتباط با سرور: ${response.status}`);
-      const data = await response.json();
-      if (data.error) throw new Error(data.error);
+      const data: { bio?: unknown; error?: unknown; note?: unknown } = await response.json();
+      if (response.status === 429) throw new Error(messages.bio.rateLimited);
+      if (!response.ok) {
+        throw new Error(typeof data.error === "string" ? data.error : messages.bio.errorNetwork);
+      }
+      if (typeof data.error === "string") throw new Error(data.error);
+      if (typeof data.bio !== "string") throw new Error(messages.bio.errorUnexpected);
       setGeneratedBio(data.bio);
-      if (data.note) setNote(data.note);
-      toast.success("بایوی تازه آماده شد");
+      if (typeof data.note === "string") setNote(data.note);
+      toast.success(messages.bio.generated);
       setTimeout(scrollToOutput, 100);
     } catch (err) {
-      const message = err instanceof Error ? err.message : "خطایی در تولید بایو رخ داد. دوباره تلاش کن.";
+      const message =
+        err instanceof TypeError
+          ? messages.bio.errorNetwork
+          : err instanceof Error
+            ? err.message
+            : messages.bio.errorUnexpected;
       console.error("Error generating bio:", err);
       setError(message);
-      toast.error("ساخت بایو ناموفق بود");
+      toast.error(messages.bio.failed);
       setTimeout(scrollToOutput, 100);
     } finally {
       setIsGenerating(false);
@@ -101,42 +113,42 @@ export default function BioGenerator() {
   };
 
   return (
-    <div dir="rtl" className="min-h-screen bg-background">
+    <div dir={locale === "fa" ? "rtl" : "ltr"} className="min-h-screen bg-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <Header />
         <main className="py-3 sm:py-8 lg:py-10">
           <section className="mx-auto mb-3 max-w-3xl text-center sm:mb-8">
             <div className="mb-3 hidden items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary sm:inline-flex">
               <Sparkles className="size-3.5" aria-hidden="true" />
-              نویسنده هوشمند فارسی
+              {messages.bio.eyebrow}
             </div>
-            <h1 className="text-balance text-xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">چند کلمه از تو، یک بایوی به‌یادماندنی</h1>
-            <p className="mx-auto mt-3 hidden max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:block sm:text-base">برای هر شبکه اجتماعی، بایویی متناسب با شخصیت و هدف تو می‌سازیم؛ سریع، فارسی و آماده انتشار.</p>
+            <h1 className="text-balance text-xl font-black leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">{messages.bio.title}</h1>
+            <p className="mx-auto mt-3 hidden max-w-2xl text-pretty text-sm leading-6 text-muted-foreground sm:block sm:text-base">{messages.bio.description}</p>
           </section>
 
           <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1.05fr)_minmax(380px,.95fr)] lg:gap-6">
-            <section className="surface-shadow rounded-2xl border bg-card p-3 sm:p-6" aria-label="فرم ساخت بایو">
+            <section className="surface-shadow rounded-2xl border bg-card p-3 sm:p-6" aria-label={messages.bio.formLabel}>
               <div className="flex flex-col gap-3 sm:gap-5">
                 <div className="flex flex-col gap-3">
-                  <SectionTitle number="۱" title="مقصد بایو" description="شبکه‌ای که بایو را برای آن می‌خواهی انتخاب کن." />
+                  <SectionTitle number={messages.bio.stepNumbers[0]} title={messages.bio.platformTitle} description={messages.bio.platformHelp} />
                   <PlatformSelector selected={platform} onSelect={setPlatform} />
                 </div>
                 <div className="h-px bg-border" />
                 <div className="flex flex-col gap-3">
-                  <SectionTitle number="۲" title="لحن نوشته" description="حسی که قرار است از بایوی تو منتقل شود." />
+                  <SectionTitle number={messages.bio.stepNumbers[1]} title={messages.bio.toneTitle} description={messages.bio.toneHelp} />
                   <ToneSelector selected={tone} onSelect={setTone} />
                 </div>
                 <div className="h-px bg-border" />
                 <div className="flex flex-col gap-3">
-                  <SectionTitle number="۳" title="درباره تو یا صفحه‌ات" description="مهارت‌ها، علایق، حوزه فعالیت یا هر نکته مهمی را بنویس." />
+                  <SectionTitle number={messages.bio.stepNumbers[2]} title={messages.bio.aboutTitle} description={messages.bio.aboutHelp} />
                   <div className="flex flex-col gap-2">
-                    <label htmlFor="about-you" className="sr-only">توضیحات درباره شما یا صفحه شما</label>
-                    <textarea id="about-you" value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder="مثلاً: طراح محصول هستم، درباره تجربه کاربری می‌نویسم و به عکاسی خیابانی علاقه دارم..." className="min-h-20 w-full resize-none sm:min-h-28 rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
+                    <label htmlFor="about-you" className="sr-only">{messages.bio.aboutLabel}</label>
+                    <textarea id="about-you" dir={locale === "fa" ? "rtl" : "ltr"} value={aboutYou} onChange={(event) => setAboutYou(event.target.value)} maxLength={charLimit} placeholder={messages.bio.aboutPlaceholder} className="min-h-20 w-full resize-none sm:min-h-28 rounded-xl border border-input bg-background px-4 py-3 text-sm leading-7 text-foreground placeholder:text-muted-foreground focus:border-primary" aria-describedby="about-help char-count" />
                     <div className="flex items-center justify-between gap-3 text-xs text-muted-foreground">
-                      <p id="about-help" className="flex items-center gap-1.5"><HelpCircle className="size-3.5" aria-hidden="true" />جزئیات بیشتر، نتیجه دقیق‌تر</p>
-                      <span id="char-count" className={cn("font-medium tabular-nums", charPercent > 90 && "text-destructive")}>{charCount} از {charLimit}</span>
+                      <p id="about-help" className="flex items-center gap-1.5"><HelpCircle className="size-3.5" aria-hidden="true" />{messages.bio.moreDetails}</p>
+                      <span id="char-count" className={cn("font-medium tabular-nums", charPercent > 90 && "text-destructive")}>{formatMessage(messages.bio.characterCount, { count: formatCount(charCount, locale), limit: formatCount(charLimit, locale) })}</span>
                     </div>
-                    <div className="h-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="تعداد کاراکترهای واردشده" aria-valuenow={charCount} aria-valuemin={0} aria-valuemax={charLimit}>
+                    <div className="h-1 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label={messages.bio.characterProgress} aria-valuenow={charCount} aria-valuemin={0} aria-valuemax={charLimit}>
                       <div className={cn("h-full rounded-full bg-primary transition-[width]", charPercent > 90 && "bg-destructive")} style={{ width: `${charPercent}%` }} />
                     </div>
                   </div>
@@ -147,9 +159,9 @@ export default function BioGenerator() {
 
                 <Button type="button" size="lg" className="w-full" onClick={generateBio} disabled={isGenerating || !isFormValid || isCooldown} aria-describedby={!isFormValid ? "form-guidance" : undefined}>
                   <Sparkles data-icon="inline-start" className={cn(isGenerating && "animate-pulse")} />
-                  {isGenerating ? "در حال نوشتن بایو..." : isCooldown && cooldownTimer > 0 ? `${cooldownTimer} ثانیه تا ساخت بعدی` : "بایوی من را بساز"}
+                  {isGenerating ? messages.bio.generating : isCooldown && cooldownTimer > 0 ? formatMessage(messages.bio.cooldown, { seconds: formatCount(cooldownTimer, locale) }) : messages.home.createBio}
                 </Button>
-                <p id="form-guidance" className="text-center text-xs text-muted-foreground">برای شروع، شبکه اجتماعی و توضیحات را کامل کن.</p>
+                <p id="form-guidance" className="text-center text-xs text-muted-foreground">{messages.bio.formGuidance}</p>
               </div>
             </section>
 

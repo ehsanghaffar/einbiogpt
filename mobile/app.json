@@ -1,0 +1,49 @@
+{
+  "expo": {
+    "name": "Ein Bio",
+    "slug": "einbio",
+    "description": "Create a personalized social media bio in English or Persian.",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": [
+      "android"
+    ],
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "com.bekservice.einbio",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "backgroundColor": "#5146e5",
+        "foregroundImage": "./assets/icon.png"
+      },
+      "predictiveBackGestureEnabled": true
+    },
+    "splash": {
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#5146e5"
+    },
+    "plugins": [
+      [
+        "expo-localization",
+        {
+          "supportedLocales": {
+            "android": [
+              "en",
+              "fa"
+            ]
+          }
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraProguardRules": "-keep class com.google.android.ump.** { *; }"
+          }
+        }
+      ]
+    ]
+  }
+}
